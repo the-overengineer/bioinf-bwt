@@ -97,20 +97,11 @@ namespace dynsa {
         ustring getText();
 
         /**
-         * Yields a substring of the original text as specified
-         * by the position and length.
+         * Yields a character at a given position in the BWT.
+         * Shorthand for getBWTAt
          *
-         * @param <size_t> start - The start index of the substring
-         * @param <size_t> length - The length of the substring
-         * @return <ustring> - The substring between given positions
-         */
-        ustring getTextFactor(size_t start, size_t length);
-
-        /**
-         * Yields a character at a given position in the text.
-         *
-         * @param <size_t> i - The index of character in text
-         * @return <uchar> - Character at given position in text
+         * @param <size_t> i - The index of character in BWT
+         * @return <uchar> - Character at given position in BWT
          */
         uchar operator[] (size_t i);
 

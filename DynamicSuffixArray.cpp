@@ -3,6 +3,10 @@
  */
 
 #include "DynamicSuffixArray.h"
+#define C_DIM 256
+#define C_SIZE (C_DIM + C_DIM)
+#define FROM_LEAF(i) ((char) ((i) - C_DIM))
+#define TO_LEAF(c) (C_DIM + (size_t) (c))
 
 namespace dynsa {
 
@@ -22,7 +26,17 @@ namespace dynsa {
     }
 
     void DynamicSuffixArray::insert(uchar c, size_t position) {
-        //TODO insert
+        L->insert(c, position);
+
+        //Update the numbers in the tree
+        size_t i = TO_LEAF(c);
+
+        while(i > 1) {
+            C[i]++;
+            i = this->getParent(i);
+        }
+
+        C[i]++;
     }
 
     void DynamicSuffixArray::insertFactor(ustring s, size_t position, size_t length) {
@@ -38,7 +52,7 @@ namespace dynsa {
     }
 
     ustring DynamicSuffixArray::getBWT() {
-        //Add an additional space for the null character
+        //One extra for the '$'
         ustring bwt = new uchar[this->size() + 1];
 
         uchar c; //Temporary storage for a character
@@ -67,15 +81,25 @@ namespace dynsa {
     }
 
     ustring DynamicSuffixArray::getText() {
-        return NULL; //TODO
-    }
+        size_t N = this->size();
+        ustring text = new uchar[N];
+        
+        //TODO what about fetching the text during substitution?
+        // Should not matter, but check
+        
+        //Set the EOS
+        text[N - 1] = '\0';
 
-    ustring DynamicSuffixArray::getTextFactor(size_t start, size_t length) {
-        return NULL; //TODO
+        for(size_t i = N - 2, j = 1; i >= 0; i--) {
+            text[i] = this[j];
+            j = this->LF(j);
+        }
+
+        return text;
     }
 
     uchar DynamicSuffixArray::operator[] (size_t i) {
-        return '$'; //TODO
+        return this->getBWTAt(i); //Shorthand
     }
 
     size_t DynamicSuffixArray::rank(uchar c, size_t i) {
@@ -91,15 +115,55 @@ namespace dynsa {
      */
 
     size_t DynamicSuffixArray::countSymbolsSmallerThan(uchar c) {
-        return 0; //TODO implement
+        //Start from the character's leaf in the tree
+        size_t i = TO_LEAF(c);
+        size_t cnt = 0;
+
+        //As long as there can be left subtrees (smaller counts in them), go up
+        while(i > 1) {
+            size_t parent = getParent(i);
+
+            //If this is the right subtree, everything in the left
+            //sibling is smaller!
+            if(this->isRightSubtree(i)) {
+                cnt += getLeftSubtree(parent);    
+            }
+
+            i = parent;
+        }
+
+        //TODO handle deleting? How should we do that? Use a flag like in the original?
+        
+        return cnt;
     }
 
     size_t DynamicSuffixArray::LF(size_t i) {
-        return i;
+        uchar c = this[i];
+        //TODO special cases while modifying
+        return this->countSymbolsSmallerThan(c) + this->rank(c, i);
     }
 
     size_t DynamicSuffixArray::FL(size_t i) {
-        return i;
+        uchar c; //i = getRankInF(i, c)
+
+        size_t smaller, node = 1; //Start at root
+
+        //Descend down the tree to locate the character
+        //Correct the cumulative sum while descending right
+        while(node < C_DIM) {
+            smaller = C[getLeftSubtree(node)];
+
+            if(smaller >= i) {
+                node = getLeftSubtree(node);
+            } else {
+                node = getRightSubtree(node);
+                i -= l;
+            }
+        }
+
+        c = FROM_LEAF(node); //Get char to which the leaf node belongs
+
+        return this->L->select(c, i);
     }
 
     bool DynamicSuffixArray::isRightSubtree(size_t i) {
