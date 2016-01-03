@@ -3,34 +3,34 @@
  */
 
 #include "DynamicSuffixArray.h"
-#define C_DIM 256
-#define C_SIZE (C_DIM + C_DIM)
 #define FROM_LEAF(i) ((char) ((i) - C_DIM))
 #define TO_LEAF(c) (C_DIM + (size_t) (c))
+#define DUMP(x) std::cout << x << std::endl
 
 namespace dynsa {
 
-    DynamicSuffixArray::DynamicSuffixArray(bool computeLCP) {
+    DynamicSuffixArray::DynamicSuffixArray(float* factors) { 
+        this->L = new DynRankS();
+        this->initialize(factors);
+    }
+
+    DynamicSuffixArray::~DynamicSuffixArray() {
+        delete this->L;
+    }
+
+    void DynamicSuffixArray::initialize(float* factors) {
+        this->L->initEmptyDynRankS(factors);
         //Initialize the C array/tree
         for(int i = 0; i < C_SIZE; i++) {
             this->C[i] = 0;
         }
-
-        this->lcp = new LCP(this, computeLCP);
-        this->L = new DynRankS();
-    }
-
-    DynamicSuffixArray::~DynamicSuffixArray() {
-        delete this->lcp;
-        delete this->L;
     }
 
     void DynamicSuffixArray::insert(uchar c, size_t position) {
         L->insert(c, position);
-
         //Update the numbers in the tree
         size_t i = TO_LEAF(c);
-
+        
         while(i > 1) {
             C[i]++;
             i = this->getParent(i);
@@ -40,7 +40,9 @@ namespace dynsa {
     }
 
     void DynamicSuffixArray::insertFactor(ustring s, size_t position, size_t length) {
-        //TODO insertFactor
+        position = MAX(position, this->size());
+
+        size_t pos_mod_bwt = 0; //TODO step Ib
     }
 
     void DynamicSuffixArray::deleteAt(size_t position) {
@@ -82,6 +84,7 @@ namespace dynsa {
 
     ustring DynamicSuffixArray::getText() {
         size_t N = this->size();
+
         ustring text = new uchar[N];
         
         //TODO what about fetching the text during substitution?
@@ -90,8 +93,8 @@ namespace dynsa {
         //Set the EOS
         text[N - 1] = '\0';
 
-        for(size_t i = N - 2, j = 1; i >= 0; i--) {
-            text[i] = this[j];
+        for(size_t i = N - 1, j = 1; i > 0; i--) {
+            text[i - 1] = this->getBWTAt(j);
             j = this->LF(j);
         }
 
@@ -126,19 +129,18 @@ namespace dynsa {
             //If this is the right subtree, everything in the left
             //sibling is smaller!
             if(this->isRightSubtree(i)) {
-                cnt += getLeftSubtree(parent);    
+                cnt += this->C[getLeftSubtree(parent)];    
             }
 
             i = parent;
         }
 
         //TODO handle deleting? How should we do that? Use a flag like in the original?
-        
         return cnt;
     }
 
     size_t DynamicSuffixArray::LF(size_t i) {
-        uchar c = this[i];
+        uchar c = this->getBWTAt(i);
         //TODO special cases while modifying
         return this->countSymbolsSmallerThan(c) + this->rank(c, i);
     }
@@ -157,7 +159,7 @@ namespace dynsa {
                 node = getLeftSubtree(node);
             } else {
                 node = getRightSubtree(node);
-                i -= l;
+                i -= smaller;
             }
         }
 
@@ -188,5 +190,9 @@ namespace dynsa {
 
     void DynamicSuffixArray::reorder() {
         return; //TODO implement
+    }
+
+    void DynamicSuffixArray::stepIb() {
+        // ???
     }
 }

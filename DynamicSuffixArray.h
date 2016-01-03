@@ -7,38 +7,33 @@
 #include "gRankS.h"
 #include "sbvtree.h"
 #include "intTree.h"
-#include "lcp.h"
 
 #define C_DIM 256
 #define C_SIZE ((C_DIM) * (C_DIM))
-
-// Sampling?! WTF?
 
 using namespace sbvtree;
 
 namespace dynsa {
 
-    typedef ustring uchar*;
+    typedef uchar* ustring;
     
     class DynamicSuffixArray {
         public:
 
         /**
          * Constructs a new suffix array.
-         * Optionally computes the LCP table to speed things up.
-         * NOTE: LCP is not yet implemented.
-         *
-         * @param <bool> computeLCP - Whether the LCP table is computed
          */
-        DynamicSuffixArray(bool computeLCP = false);
+        DynamicSuffixArray(float* factors);
 
         /**
          * Performs suffix array destruction
          */
         ~DynamicSuffixArray();
 
+        void initialize(float* factors);
+
         /**
-         * Inserts a character c into the text T at the given position.
+         * Inserts a character c into L (BWT) at the given position.
          *
          * @param <uchar> c - Character to insert into text
          * @param <size_t> position - Position at which to insert
@@ -192,7 +187,9 @@ namespace dynsa {
          * Performs the REORDER step (IIb) of the DynSA algorithm
          */
         void reorder();
-    }
-}
+
+        void stepIb(); // Nothing at all implemented here
+    };
+};
 
 #endif
