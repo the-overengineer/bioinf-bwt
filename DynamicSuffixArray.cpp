@@ -6,11 +6,13 @@
 #define FROM_LEAF(i) ((char) ((i) - C_DIM))
 #define TO_LEAF(c) (C_DIM + (size_t) (c))
 #define DUMP(x) std::cout << x << std::endl
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 namespace dynsa {
 
     DynamicSuffixArray::DynamicSuffixArray(float* factors) { 
         this->L = new DynRankS();
+        this->sample = new DSASampling(this, 0); //TODO ? Replace 0 maybe?
         this->initialize(factors);
     }
 
@@ -73,7 +75,7 @@ namespace dynsa {
             }
         }
 
-        bwt[i - 1] = '\0'; //Delimit the string
+        bwt[this->size()] = '\0'; //Delimit the string
 
         return bwt;
     }
@@ -84,8 +86,7 @@ namespace dynsa {
 
     ustring DynamicSuffixArray::getText() {
         size_t N = this->size();
-
-        ustring text = new uchar[N];
+            ustring text = new uchar[N];
         
         //TODO what about fetching the text during substitution?
         // Should not matter, but check
@@ -137,6 +138,15 @@ namespace dynsa {
 
         //TODO handle deleting? How should we do that? Use a flag like in the original?
         return cnt;
+    }
+
+
+    size_t DynamicSuffixArray::getSA(size_t i) {
+        return sample->getSA(i);
+    }
+
+    size_t DynamicSuffixArray::getISA(size_t i) {
+        return sample->getISA(i);
     }
 
     size_t DynamicSuffixArray::LF(size_t i) {

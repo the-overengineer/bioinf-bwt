@@ -5,7 +5,7 @@ CPPFLAGS=-Wall $(DBG) $(FREE)  -O2 -funroll-loops
 LINKFLAGS=
 CFLAGS=-Wall -ansi
 EXE=test
-OBJ=sbvtree.o DynamicSuffixArray.o rbtree.o  intTree.o lpermutation.o gRankS.o
+OBJ=sbvtree.o DynamicSuffixArray.o DSASampling.o rbtree.o  intTree.o lpermutation.o gRankS.o
 
 all: $(EXE)
 

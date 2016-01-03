@@ -7,9 +7,14 @@
 #include "gRankS.h"
 #include "sbvtree.h"
 #include "intTree.h"
+#include "DSASampling.h"
+#include "lfMappable.h"
 
 #define C_DIM 256
 #define C_SIZE ((C_DIM) * (C_DIM))
+
+//Taken from the paper's code
+#define SAMPLE 42
 
 using namespace sbvtree;
 
@@ -17,7 +22,7 @@ namespace dynsa {
 
     typedef uchar* ustring;
     
-    class DynamicSuffixArray {
+    class DynamicSuffixArray : public LFMap {
         public:
 
         /**
@@ -117,6 +122,24 @@ namespace dynsa {
          */
         size_t size();
 
+        /**
+         * Computes LF mapping (from last column to first) of index
+         *
+         * @param <size_t> i - Position in L
+         * @return <size_t> - Position i F
+         */
+        size_t LF(size_t i);
+
+         /*
+         * Computes the FL mapping, the inverse of the LF mapping,
+         * of an index.
+         *
+         * @param <size_t> i - Position in F
+         * @return <size_t> - Position in L
+         */
+         size_t FL(size_t i);
+
+
         private:
 
         /**
@@ -129,6 +152,12 @@ namespace dynsa {
          */
         DynRankS* L;
 
+
+        /**
+         * The sampler user for SA and ISA mappings
+         */
+        DSASampling* sample;
+
         /**
          * Returns the number of symbols smaller than a given symbol.
          * //TODO elaborate
@@ -138,23 +167,21 @@ namespace dynsa {
          */
         size_t countSymbolsSmallerThan(uchar c);
 
+        /**
+         * Get suffix array mapping for index i
+         *
+         * @param <size_t> i - Index
+         * @return <size_t> - Index in SA
+         */
+        size_t getSA(size_t i);
 
         /**
-         * Computes LF mapping (from last column to first) of index
+         * Get inverse suffix array mapping for index i
          *
-         * @param <size_t> i - Position in L
-         * @return <size_t> - Position i F
+         * @param <size_t> i - Index
+         * @return <size_t> - Index in ISA
          */
-        size_t LF(size_t i);
-
-        /**
-         * Computes the FL mapping, the inverse of the LF mapping,
-         * of an index.
-         *
-         * @param <size_t> i - Position in F
-         * @return <size_t> - Position in L
-         */
-        size_t FL(size_t i);
+        size_t getISA(size_t i);
 
         /**
          * Checks whether the subtree is a right subtree

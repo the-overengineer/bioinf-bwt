@@ -3,17 +3,20 @@
 using namespace std;
 
 int main() {
-    dynsa::ustring s = new uchar[5];
-    s[0] = (uchar) 'A';
-    s[1] = (uchar) 'A';
-    s[2] = (uchar) 'T';
-    s[3] = (uchar) 'C';
-    s[4] = (uchar) 0;
+    dynsa::ustring s = new uchar[8];
+    s[0] = (uchar) 'G';
+    s[1] = (uchar) 'G';
+    s[2] = (uchar) 'C';
+    s[3] = (uchar) 0;
+    s[4] = (uchar) 'A';
+    s[5] = (uchar) 'A';
+    s[6] = (uchar) 'C';
+    s[7] = (uchar) 'C';
 
-    float* fs = DynRankS::createCharDistribution(s, 5, 1);
+    float* fs = DynRankS::createCharDistribution(s, 8, 1);
     dynsa::DynamicSuffixArray * a = new dynsa::DynamicSuffixArray(fs);
 
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < 8; i++) {
         a->insert(s[i], i + 1);
         cout << a->getText() << ", " << a->getBWT() << endl;
     }
