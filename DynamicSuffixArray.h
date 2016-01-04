@@ -38,12 +38,33 @@ namespace dynsa {
         void initialize(float* factors);
 
         /**
-         * Inserts a character c into L (BWT) at the given position.
+         * Inserts a character c into L (BWT) at the given position
+         * and updates the partial sums inside C.
          *
          * @param <uchar> c - Character to insert into text
          * @param <size_t> position - Position at which to insert
          */
         void insert(uchar c, size_t position);
+
+        /**
+         * Removes a character at given position in L and updates
+         * the partial sums.
+         *
+         * @param <size_t> position - Position at which the deleting
+         *                            happening.
+         */
+        void del(size_t position);
+
+
+        /**
+         * Moves a row from position i to position j.
+         *
+         * @param <size_t> i - Origin row
+         * @param <size_t> j - Destination row
+         */
+        void moveRow(size_t i, size_t j)
+
+        void insertToText(uchar c, size_t position);
 
         /**
          * Inserts a factor (string) of given size into the text at
@@ -96,16 +117,7 @@ namespace dynsa {
          */
         ustring getText();
 
-        /**
-         * Yields a character at a given position in the BWT.
-         * Shorthand for getBWTAt
-         *
-         * @param <size_t> i - The index of character in BWT
-         * @return <uchar> - Character at given position in BWT
-         */
-        uchar operator[] (size_t i);
-
-        /**
+         /**
          * Computes the rank of a given character at position i.
          *
          * @param <uchar> c - Character for which to compute rank
@@ -121,6 +133,13 @@ namespace dynsa {
          * @return <size_t> - The size of the text
          */
         size_t size();
+
+        /**
+         * Checks whether the SA is empty
+         *
+         * @return <bool> - Whether SA is empty
+         */
+        bool isEmpty();
 
         /**
          * Computes LF mapping (from last column to first) of index
@@ -211,11 +230,13 @@ namespace dynsa {
         size_t getParent(size_t i);
 
         /**
-         * Performs the REORDER step (IIb) of the DynSA algorithm
+         * Performs the REORDER step (IIb) of the DynSA algorithm.
+         * In this case <j> is the index of T^[i-1], while insertion_point
+         * is the point at which we inserted our new row.
+         *
+         * Might have to be corrected when other operations are added, TODO
          */
-        void reorder();
-
-        void stepIb(); // Nothing at all implemented here
+        void reorder(size_t j, size_t insertion_point);
     };
 };
 

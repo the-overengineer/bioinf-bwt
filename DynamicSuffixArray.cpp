@@ -22,23 +22,83 @@ namespace dynsa {
 
     void DynamicSuffixArray::initialize(float* factors) {
         this->L->initEmptyDynRankS(factors);
-        //Initialize the C array/tree
+        //Initialize the partial sums tree
         for(int i = 0; i < C_SIZE; i++) {
             this->C[i] = 0;
         }
     }
 
     void DynamicSuffixArray::insert(uchar c, size_t position) {
-        L->insert(c, position);
-        //Update the numbers in the tree
+        this->L->insert(c, position);
+        
+        //Update the numbers in the tree, updating our partial sums that way
         size_t i = TO_LEAF(c);
         
         while(i > 1) {
-            C[i]++;
+            this->C[i]++;
             i = this->getParent(i);
         }
 
-        C[i]++;
+        this->C[i]++;
+    }
+
+    void DynamicSuffixArray::del(size_t position) {
+        //Pop the symbol
+        uchar c = this->L->deleteSymbol(position);
+
+        //Update the partial sums
+        size_t i = TO_LEAF(c);
+
+        while(i > 1) {
+            this->C[i]--;
+            i = this->getParent(i);
+        }
+
+        this->C[i]--;
+    }
+
+    void DynamicSuffixArray::moveRow(size_t i, size_t j) {
+        uchar c = this->getBWTAt(i);
+        del(i);
+        insert(c, j);
+    }
+
+    void DynamicSuffixArray::insertToText(uchar c, size_t position) {
+        position = MAX(position, this->size()); //Cannot insert after the end of the text
+
+        //Step Ib modifies T^[position]
+        
+        //a) Find the position via sampling
+        size_t k = this->getISA(position);
+
+        //Stores the position of T^[position-1] for reordering later
+        size_t previous_position = 0;
+
+        //b) Perform the replacement, deleting the old char if there is one
+        if(! this->isEmpty()) {
+            uchar old_sym = this->getBWTAt(k);
+            previous_position = countSymbolsSmallerThan(old_sym) + rank(old_sym, k);
+
+            this->L->deleteSymbol(k);    
+        }
+
+        insert(c, k); //Insert the replacement symbol
+
+        //Step 2a inserts a row @ LF(k)
+        size_t insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, k);
+        insert(c, insertion_point); //The Gonzales-Navarro structure should handle this
+                                    //According to the paper, at least
+                                  
+
+        //Update our sampler. I honestly still have no idea what the sampler does
+        sample->insertBWT(position, insertion_point);
+
+        //Finally, step IIb, REORDER. We give it 
+        //The parameters are j and index(T'^[i]), from which j' is computed
+        reorder(previous_position, insertion_point);
+
+        //Perform the final update of our sampler
+        sample->insertBWT(position);
     }
 
     void DynamicSuffixArray::insertFactor(ustring s, size_t position, size_t length) {
@@ -112,6 +172,10 @@ namespace dynsa {
 
     size_t DynamicSuffixArray::size() {
         return this->L->getSize();
+    }
+
+    bool DynamicSuffixArray::isEmpty() {
+        return this->size() == 0;
     }
 
     /*
@@ -198,11 +262,15 @@ namespace dynsa {
         return floor(i / 2);
     }
 
-    void DynamicSuffixArray::reorder() {
-        return; //TODO implement
-    }
+    void DynamicSuffixArray::reorder(size_t j, size_t insertion_point) {
+        size_t j_comp = this->LF(insertion_point);
+        size_t new_j = 0;
 
-    void DynamicSuffixArray::stepIb() {
-        // ???
+        while(j != comp) {
+            new_j = this->LF(j);
+            moveRow(j, j_comp);
+            j = new_j;
+            j_comp = this->LF(j_comp);
+        }
     }
 }
