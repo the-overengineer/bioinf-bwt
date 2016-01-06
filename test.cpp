@@ -17,7 +17,7 @@ int main() {
     dynsa::DynamicSuffixArray * a = new dynsa::DynamicSuffixArray(fs);
 
     for(int i = 0; i < 8; i++) {
-        a->insert(s[i], i + 1);
+        a->insertToText(s[i], i + 1);
         cout << a->getText() << ", " << a->getBWT() << endl;
     }
 

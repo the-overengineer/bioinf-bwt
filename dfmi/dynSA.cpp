@@ -243,6 +243,7 @@ namespace dynsa {
 
 
   size_t DynSA::getISA(size_t pos) {
+    cout << "ISA WITH " << pos << endl;
 #if SAMPLE!=0
     return sample->getISA(pos);
 #else

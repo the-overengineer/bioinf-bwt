@@ -62,7 +62,7 @@ namespace dynsa {
          * @param <size_t> i - Origin row
          * @param <size_t> j - Destination row
          */
-        void moveRow(size_t i, size_t j)
+        void moveRow(size_t i, size_t j);
 
         void insertToText(uchar c, size_t position);
 

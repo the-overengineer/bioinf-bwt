@@ -12,11 +12,12 @@ namespace dynsa {
 
     DynamicSuffixArray::DynamicSuffixArray(float* factors) { 
         this->L = new DynRankS();
-        this->sample = new DSASampling(this, 0); //TODO ? Replace 0 maybe?
         this->initialize(factors);
+        this->sample = new DSASampling(this, SAMPLE);
     }
 
     DynamicSuffixArray::~DynamicSuffixArray() {
+        delete this->sample;
         delete this->L;
     }
 
@@ -64,26 +65,28 @@ namespace dynsa {
     }
 
     void DynamicSuffixArray::insertToText(uchar c, size_t position) {
-        position = MAX(position, this->size()); //Cannot insert after the end of the text
+        //position = MAX(position, this->size()); //Cannot insert after the end of the text
 
         //Step Ib modifies T^[position]
-        
+        DUMP("A"); 
         //a) Find the position via sampling
         size_t k = this->getISA(position);
-
+        DUMP("B");
         //Stores the position of T^[position-1] for reordering later
         size_t previous_position = 0;
 
         //b) Perform the replacement, deleting the old char if there is one
         if(! this->isEmpty()) {
             uchar old_sym = this->getBWTAt(k);
+            DUMP("D " << old_sym);
             previous_position = countSymbolsSmallerThan(old_sym) + rank(old_sym, k);
-
-            this->L->deleteSymbol(k);    
+            DUMP("E " << previous_position);
+            this->L->deleteSymbol(k);
+            DUMP("F");
         }
-
+        DUMP("G");
         insert(c, k); //Insert the replacement symbol
-
+        DUMP("H");
         //Step 2a inserts a row @ LF(k)
         size_t insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, k);
         insert(c, insertion_point); //The Gonzales-Navarro structure should handle this
@@ -162,9 +165,6 @@ namespace dynsa {
         return text;
     }
 
-    uchar DynamicSuffixArray::operator[] (size_t i) {
-        return this->getBWTAt(i); //Shorthand
-    }
 
     size_t DynamicSuffixArray::rank(uchar c, size_t i) {
         return this->L->rank(c, i); //TODO special case handling during operations!
@@ -199,6 +199,7 @@ namespace dynsa {
 
             i = parent;
         }
+
 
         //TODO handle deleting? How should we do that? Use a flag like in the original?
         return cnt;
@@ -266,7 +267,7 @@ namespace dynsa {
         size_t j_comp = this->LF(insertion_point);
         size_t new_j = 0;
 
-        while(j != comp) {
+        while(j != j_comp) {
             new_j = this->LF(j);
             moveRow(j, j_comp);
             j = new_j;

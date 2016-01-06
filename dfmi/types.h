@@ -1,28 +1,12 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#ifndef uchar
-#define uchar unsigned char
-#endif
-
-#ifndef size_t
-#define size_t unsigned long
-#endif
-
-#ifndef ulong
-#define ulong unsigned long
-#endif
-
-#ifndef ullong
-#define ullong unsigned long long
-#endif
-
-#ifndef uint
-#define uint unsigned int
-#endif
-
-#ifndef byte
-#define byte unsigned char
-#endif
+typedef unsigned char uchar;
+typedef unsigned long size_t;
+typedef unsigned long ulong;
+typedef unsigned long long ullong;
+typedef unsigned int uint;
+typedef unsigned char uchar;
+typedef unsigned char byte;
 
 #endif

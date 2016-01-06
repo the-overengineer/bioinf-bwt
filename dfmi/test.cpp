@@ -137,6 +137,8 @@ int main(int argc, char *argv[]) {
   f = DynRankS::createCharDistribution(text, (n > 10000000) ? n+1 : 10000000, 1);
   wt->initEmptyDynSA(f);
   time1 = getChrono();
+  cerr << "Size of basic is " << wt->getSize() << endl;
+  cerr << "Adding text at " << n << " where text is " << text << endl;
   wt->addText(text,n);
   time1 = getChrono()-time1;
   cerr << "Index built in " << time1/1000000.0 << " s." << endl;
