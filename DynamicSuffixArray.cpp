@@ -7,6 +7,7 @@
 #define TO_LEAF(c) (C_DIM + (size_t) (c))
 #define DUMP(x) std::cout << x << std::endl
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) > (b) ? (b) : (a))
 
 namespace dynsa {
 
@@ -65,30 +66,80 @@ namespace dynsa {
     }
 
     void DynamicSuffixArray::insertToText(uchar c, size_t position) {
-        //position = MAX(position, this->size()); //Cannot insert after the end of the text
+        //Cannot insert after the end of text
+        position = MIN(position, this->size());
+
+        if(this->isEmpty()) {
+            this->insert(c, 1);
+            sample->insertBWT(1, 1);
+            sample->insertBWT(1);
+            return;
+        }
 
         //Step Ib modifies T^[position]
-        DUMP("A"); 
         //a) Find the position via sampling
         size_t k = this->getISA(position);
-        DUMP("B");
+       
         //Stores the position of T^[position-1] for reordering later
         size_t previous_position = 0;
 
         //b) Perform the replacement, deleting the old char if there is one
         if(! this->isEmpty()) {
             uchar old_sym = this->getBWTAt(k);
-            DUMP("D " << old_sym);
             previous_position = countSymbolsSmallerThan(old_sym) + rank(old_sym, k);
-            DUMP("E " << previous_position);
             this->L->deleteSymbol(k);
-            DUMP("F");
         }
-        DUMP("G");
+        
         insert(c, k); //Insert the replacement symbol
-        DUMP("H");
-        //Step 2a inserts a row @ LF(k)
+        
+        //Step IIa inserts a row @ LF(k)
         size_t insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, k);
+        
+        insert(c, insertion_point); //The Gonzales-Navarro structure should handle this
+                                    //According to the paper, at least
+                                  
+        //Update our sampler. I honestly still have no idea what the sampler does
+        sample->insertBWT(position, insertion_point);
+
+
+        //Finally, step IIb, REORDER. We give it 
+        //The parameters are j and index(T'^[i]), from which j' is computed
+        reorder(previous_position, insertion_point);
+
+        //Perform the final update of our sampler
+        sample->insertBWT(position);
+    }
+
+    void DynamicSuffixArray::insertFactor(ustring s, size_t position, size_t length) {
+        position = MIN(position, this->size());
+
+        //Step Ib modifies T^[position]
+        //a) Find the position via sampling
+        size_t k = this->getISA(position);
+        
+        //Stores the position of T^[position-1] for reordering later
+        size_t previous_position = 0;
+
+        //b) Perform the replacement, deleting the old char if there is one
+        if(! this->isEmpty()) {
+            uchar old_sym = this->getBWTAt(k);
+            previous_position = countSymbolsSmallerThan(old_sym) + rank(old_sym, k);
+            this->L->deleteSymbol(k);
+        }
+       
+        //The last character of the string
+        uchar c = s[length - 1];
+
+        insert(c, k); //Insert the replacement symbol
+        
+        //Step IIa inserts a bunch of rows
+        size_t insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, k);
+        
+        //TODO check? Maybe only >= i instead of > i?
+        for(size_t j = position + length - 1; j > position; j++) {
+           //TODO complete 
+        }
+        
         insert(c, insertion_point); //The Gonzales-Navarro structure should handle this
                                     //According to the paper, at least
                                   
@@ -102,12 +153,6 @@ namespace dynsa {
 
         //Perform the final update of our sampler
         sample->insertBWT(position);
-    }
-
-    void DynamicSuffixArray::insertFactor(ustring s, size_t position, size_t length) {
-        position = MAX(position, this->size());
-
-        size_t pos_mod_bwt = 0; //TODO step Ib
     }
 
     void DynamicSuffixArray::deleteAt(size_t position) {
@@ -200,7 +245,6 @@ namespace dynsa {
             i = parent;
         }
 
-
         //TODO handle deleting? How should we do that? Use a flag like in the original?
         return cnt;
     }
@@ -211,6 +255,10 @@ namespace dynsa {
     }
 
     size_t DynamicSuffixArray::getISA(size_t i) {
+        if(this->isEmpty()) {
+            return 1;
+        }
+
         return sample->getISA(i);
     }
 
@@ -221,7 +269,7 @@ namespace dynsa {
     }
 
     size_t DynamicSuffixArray::FL(size_t i) {
-        uchar c; //i = getRankInF(i, c)
+        uchar c;
 
         size_t smaller, node = 1; //Start at root
 

@@ -1,7 +1,7 @@
 CPP=g++
 CC=gcc
 DBG= -DNO_CHECK -DNDEBUG # -DNDEBUG -O0 -g -DNFREE_ISA
-CPPFLAGS=-Wall $(DBG) $(FREE)  -O2 -funroll-loops
+CPPFLAGS=-Wall $(DBG) $(FREE) #-O2 -funroll-loops
 LINKFLAGS=
 CFLAGS=-Wall -ansi
 EXE=test
