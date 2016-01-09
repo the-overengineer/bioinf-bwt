@@ -20,6 +20,8 @@ using namespace sbvtree;
 
 namespace dynsa {
 
+    enum Operation { none, inserting, deleting, replacing };
+
     typedef uchar* ustring;
     
     class DynamicSuffixArray : public LFMap {
@@ -167,6 +169,37 @@ namespace dynsa {
         size_t C[C_SIZE];
 
         /**
+         * During an operation, the positing corresponding to row T^[i]
+         */
+        size_t k;
+
+        /**
+         * The previous position of a deleted character during an operation [previous_cs in their code]
+         */
+        size_t previous_position;
+
+        /**
+         * A point at which a new row was last inserted [position_mod_bwt in their code]
+         */
+        size_t insertion_point;
+
+
+        /**
+         * The position of the first modification
+         */
+        size_t first_modification_position;
+
+        /**
+         * The last deleted symbol
+         */
+        uchar old_sym;
+
+        /**
+         * The symbol we are inserting [new_letter_L]
+         */
+        uchar new_sym;
+
+        /**
          * The last column of the text; Also the BWT
          */
         DynRankS* L;
@@ -176,6 +209,11 @@ namespace dynsa {
          * The sampler user for SA and ISA mappings
          */
         DSASampling* sample;
+
+        /**
+         * The last or current operation
+         */
+        Operation operation;
 
         /**
          * Returns the number of symbols smaller than a given symbol.

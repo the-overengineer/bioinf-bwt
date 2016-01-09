@@ -12,6 +12,7 @@
 namespace dynsa {
 
     DynamicSuffixArray::DynamicSuffixArray(float* factors) { 
+        this->operation = none;
         this->L = new DynRankS();
         this->initialize(factors);
         this->sample = new DSASampling(this, SAMPLE);
@@ -31,6 +32,16 @@ namespace dynsa {
     }
 
     void DynamicSuffixArray::insert(uchar c, size_t position) {
+        if(operation == inserting || operation == deleting) {
+            if(position <= previous_position) {
+                previous_position++;
+            }
+
+            if(position <= first_modification_position) {
+                first_modification_position++;
+            }
+        }
+
         this->L->insert(c, position);
         
         //Update the numbers in the tree, updating our partial sums that way
@@ -78,7 +89,7 @@ namespace dynsa {
 
         //Step Ib modifies T^[position]
         //a) Find the position via sampling
-        size_t k = this->getISA(position);
+        k = this->getISA(position);
        
         //Stores the position of T^[position-1] for reordering later
         size_t previous_position = 0;
@@ -97,15 +108,32 @@ namespace dynsa {
         //}
         
         insert(c, k); //Insert the replacement symbol
-        
+      
+        new_sym = c;
+        this->operation = inserting;
+
+        //if(old_sym > new_sym) {
+        //    previous_position--;
+        //}
+
         //Step IIa inserts a row @ LF(k)
         size_t insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, k);
-        
+       
+        //if(pos_first_modif < k && c == old_sym) {
+        //    insertion_point++;
+        //}
+
         insert(old_sym, insertion_point); //The Gonzales-Navarro structure should handle this
                                     //According to the paper, at least
-                                  
+        
+        //if(insertion_point <= previous_position) {
+        //
+        //}
+
         //Update our sampler. I honestly still have no idea what the sampler does
         sample->insertBWT(position, insertion_point);
+
+        //
 
         //Finally, step IIb, REORDER. We give it 
         //The parameters are j and index(T'^[i]), from which j' is computed
@@ -118,37 +146,63 @@ namespace dynsa {
     void DynamicSuffixArray::insertFactor(ustring s, size_t position, size_t length) {
         position = MIN(position, this->size());
 
+        DUMP("x");
         //Step Ib modifies T^[position]
         //a) Find the position via sampling
-        size_t k = this->getISA(position);
-        
-        //Stores the position of T^[position-1] for reordering later
-        size_t previous_position = 0;
+        k = this->getISA(position);
 
         //b) Perform the replacement, deleting the old char if there is one
         if(! this->isEmpty()) {
-            uchar old_sym = this->getBWTAt(k);
+            old_sym = this->getBWTAt(k);
             previous_position = countSymbolsSmallerThan(old_sym) + rank(old_sym, k);
             this->L->deleteSymbol(k);
+        } else {
+            previous_position = countSymbolsSmallerThan(old_sym);
         }
        
         //The last character of the string
         uchar c = s[length - 1];
 
         insert(c, k); //Insert the replacement symbol
-        
+        first_modification_position = k; //Update our first modification position in this run
+
+        this->new_sym = c;
+        this->operation = inserting;
+
+        if(old_sym > new_sym) {
+            previous_position--;
+        }
+
         //Step IIa inserts a bunch of rows
         size_t insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, k);
         
         //TODO check? Maybe only >= i instead of > i?
-        for(size_t j = position + length - 1; j > position; j++) {
-           //TODO complete 
+        for(size_t j = length - 1; j > 0; j--) {
+           this->insert(s[j -1], insertion_point);
+           new_sym = s[j - 1];
+
+           sample->insertBWT(position, insertion_point);
+
+           k = insertion_point;
+
+           insertion_point = this->countSymbolsSmallerThan(s[j - 1]) + this->rank(s[j - 1], insertion_point);
+
+           if(first_modification_position < k && s[j - 1] == old_sym) {
+             insertion_point++;
+           }
+        }
+
+        new_sym = old_sym;
+        L->insert(old_sym, insertion_point);
+
+        if(insertion_point <= previous_position) {
+            previous_position++;
+        }
+
+        if(insertion_point <= first_modification_position) {
+            first_modification_position++;
         }
         
-        insert(c, insertion_point); //The Gonzales-Navarro structure should handle this
-                                    //According to the paper, at least
-                                  
-
         //Update our sampler. I honestly still have no idea what the sampler does
         sample->insertBWT(position, insertion_point);
 
@@ -206,8 +260,9 @@ namespace dynsa {
         
         for(size_t i = N - 1, j = 1; i > 0; i--) {
             text[i - 1] = this->getBWTAt(j);
-            cout << "Setting [" << i - 1 << "] to " << text[i - 1] << endl;
+            cout << "text[" << i - 1 << "] = " << text[i - 1] << ", j = " << j << endl;
             j = this->LF(j);
+            cout << "j' = " << j << endl;
         }
 
         //Set the EOS
@@ -270,9 +325,34 @@ namespace dynsa {
     }
 
     size_t DynamicSuffixArray::LF(size_t i) {
+        if(operation != none && i == insertion_point) {
+            return previous_position;
+        }
+
         uchar c = this->getBWTAt(i);
         //TODO special cases while modifying
-        return this->countSymbolsSmallerThan(c) + this->rank(c, i);
+        size_t smaller = this->countSymbolsSmallerThan(c);
+        size_t r = this->rank(c, i);
+
+        if(operation != none) {
+            if(operation == inserting) {
+                uchar other = this->getBWTAt(insertion_point);
+                if(other == old_sym && i > first_modification_position) {
+                    r++;
+                }
+
+                if(c > new_sym) {
+                    smaller--;
+                }
+
+                if(other == c && i > insertion_point) {
+                    r--;
+                }
+            }
+
+        }
+        
+        return smaller + r;
     }
 
     size_t DynamicSuffixArray::FL(size_t i) {
