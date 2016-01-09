@@ -82,25 +82,30 @@ namespace dynsa {
        
         //Stores the position of T^[position-1] for reordering later
         size_t previous_position = 0;
+        uchar old_sym;
 
         //b) Perform the replacement, deleting the old char if there is one
         if(! this->isEmpty()) {
-            uchar old_sym = this->getBWTAt(k);
+            old_sym = this->getBWTAt(k);
             previous_position = countSymbolsSmallerThan(old_sym) + rank(old_sym, k);
             this->L->deleteSymbol(k);
         }
+
+        //Try a fix?! FIXME
+        //if(old_sym > c) {
+        //    previous_position--;
+        //}
         
         insert(c, k); //Insert the replacement symbol
         
         //Step IIa inserts a row @ LF(k)
         size_t insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, k);
         
-        insert(c, insertion_point); //The Gonzales-Navarro structure should handle this
+        insert(old_sym, insertion_point); //The Gonzales-Navarro structure should handle this
                                     //According to the paper, at least
                                   
         //Update our sampler. I honestly still have no idea what the sampler does
         sample->insertBWT(position, insertion_point);
-
 
         //Finally, step IIb, REORDER. We give it 
         //The parameters are j and index(T'^[i]), from which j' is computed
@@ -193,19 +198,21 @@ namespace dynsa {
     }
 
     ustring DynamicSuffixArray::getText() {
-        size_t N = this->size();
+        size_t N = this->size() + 1;
             ustring text = new uchar[N];
         
         //TODO what about fetching the text during substitution?
         // Should not matter, but check
         
+        for(size_t i = N - 1, j = 1; i > 0; i--) {
+            text[i - 1] = this->getBWTAt(j);
+            cout << "Setting [" << i - 1 << "] to " << text[i - 1] << endl;
+            j = this->LF(j);
+        }
+
         //Set the EOS
         text[N - 1] = '\0';
 
-        for(size_t i = N - 1, j = 1; i > 0; i--) {
-            text[i - 1] = this->getBWTAt(j);
-            j = this->LF(j);
-        }
 
         return text;
     }
