@@ -1,6 +1,7 @@
 #include "DynamicSuffixArray.h"
-#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
+#include <string.h>
 #include <time.h>
 #include <sys/time.h>
 
@@ -37,8 +38,10 @@ using namespace std;
 
 ullong getTime();
 
-TEST_CASE("One equals one", "[one]"){
-    ullong start = getTime();
+dynsa::DynamicSuffixArray *a;
+
+int main( int argc, char* const argv[]){
+    
     dynsa::ustring s = new uchar[10];
     s[0] = (uchar) 'G';
     s[1] = (uchar) 'T';
@@ -52,14 +55,24 @@ TEST_CASE("One equals one", "[one]"){
     s[9] = (uchar) 0;
 
     float* fs = DynRankS::createCharDistribution(s, 10, 1);
-    dynsa::DynamicSuffixArray * a = new dynsa::DynamicSuffixArray(fs);
-    a->setText(s, 10);
+    a = new dynsa::DynamicSuffixArray(fs);
+    
+    int result = Catch::Session().run(argc, argv);
+    
+    return result;
+}
 
-    cout << a->getText() << endl;
-    cout << a->getBWT() << endl;
-    ullong stop = getTime();
-    cout << stop - start << endl;
-    REQUIRE(1==1);
+TEST_CASE("setText sets short text", "setTextShort"){
+    
+    
+    ustring s = (ustring) "GTGAGTGAG";
+    ustring bwt = (ustring) "GGGATTA$GG";
+    a->setText(s, 10);
+    int sz = sizeof(s);
+    
+    CHECK( memcmp(a->getText(), s, sz) == 0);
+    sz = sizeof(bwt);
+    REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
 }
 
 TEST_CASE("Zero equals zero", "[zero]"){
@@ -75,4 +88,5 @@ ullong getTime() {
         usec = time.tv_usec;
         return (ullong)sec*1000000+usec;
     }
+    return 0;
 }

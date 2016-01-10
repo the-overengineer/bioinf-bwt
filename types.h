@@ -1,7 +1,6 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-typedef unsigned char uchar;
 typedef unsigned long size_t;
 typedef unsigned long ulong;
 typedef unsigned long long ullong;
