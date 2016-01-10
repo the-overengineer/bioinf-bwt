@@ -1,5 +1,6 @@
 \documentclass{ferseminar}
 
+\usepackage[table,xcdraw]{xcolor}
 
 
 \student{Antonio Benc, Matija Herceg, Luka Skukan}
@@ -16,8 +17,51 @@ Burrows-Wheelerova transformacija (BWT) je transformacija teksta, vrlo prikladna
 Konceptualno, tekst nad kojim je izvršena BWT je sličan sufiksnom polju. Zbog te sličnosti BWT se koristi i kao indeksna struktura. BWT teksta $T$ ($bwt(t)$) se često dobiva iz modifikacije sufiksnog polja koja konstrukcija ima $O(n)$ složenost. Pohranjivanje sufiksnog polja u memoriji je jos uvjek glavni problem jer zahtjeva n $n\log{}n$ bita dok pohrana BWT-a u memoriju zahtjeva $(n\log{}\sigma)$ bita, gdje je $\sigma$ broj slova u abecedi.
 \subparagraph{}
 U ovom seminaru razmatrat će se uobičajne operacije nad tekstom, umetanje znakova, brisanje znakova ili mijenjanje znaka, koje tekst $T$ transformiraju u novi tekst $T'$. Biti će proučavan utjecaj tih operacija na $bwt(T)$ i biti će predložen algoritam za pretvorbu $bwt(T)$ u $bwt(T')$.
+\section{Burrows-Wheelerova transformacija}
+Neka je tekst $T=T[0..n]$ riječ duljine $n+1$ s abecedom $\Sigma$, pri čemu je abeceda $\Sigma$ konacne velicine $\sigma$. Zadnji znak u rijeci $T$ je jedinstveni znak $\$$ (\textit{sentinel}) koji ima vrijedmost manju od svih ostalih znakova u abecedi.  Podniz koji pocinje na poziciji $i$ i zavrsava na poziciji $j$ je oznacen s $T[i..j]$, znak na poziciji $i$ je oznacen s $T[i]$ te je ciklički pomak reda $i$,  $T[i..n]T[0..i-1]$, oznacen s $T^{[i]}$.
+\subparagraph{}
+Burrows-Wheelerova transformacija od $T$, oznacena s $bwt(T)$, je tekst duljine n+1 koji odgovara zadnjem stupcu, ($L$), matrice čiji su reci leksikografski sortirani ciklički pomaci $T^{[i]}$. Prvi stupac matrice, ($F$), je sortiran, tako da se jednostavno može izračunati iz stupca $L$. Redovi sortiranih cikličkih pomaka, $\pi$ jednaki su sufiksnom polju od $T$. Iz toga slijedi kako su sufiksno polje $SA[i]$ i $L$ povezani jednostavnom formulom $L[i]= T[(SA[i]-1) \mod |T|]$.
+\subparagraph{}
+\begin{table}[h]
 
-\section{Poglavlja seminara}
+\begin{tabular}{r c c c c c c c c c r c c c c c c c c c c}
+		
+		  &   &  &  &  &  &  	
+      & & & & & & & & 
+      & & & \multicolumn{1}{l|}{i} & $\pi$    \\ 
+	  \cline{2-7} \cline{11-16} \cline{18-19}
+      \multicolumn{1}{l|}{$T^{[0]}$} & A & T & G & C & G & \multicolumn{1}{l|}{\$} &  	
+      & &    \multicolumn{1}{l|}{$T^{[5]}$} & \$ & A & T & G & C & \cellcolor[HTML]{9B9B9B} G
+      & & \multicolumn{1}{l|}{0} & 5    \\ 
+      
+	 \multicolumn{1}{l|}{$T^{[1]}$} & T & G & C & G & \$ & \multicolumn{1}{l|}{A} &
+	  & &    \multicolumn{1}{l|}{$T^{[0]}$} & A & T & G & C & G & \cellcolor[HTML]{9B9B9B} \$
+	  & & \multicolumn{1}{l|}{1} & 0     \\ 
+	  
+	  \multicolumn{1}{l|}{$T^{[2]}$} & G & C & G & \$ & A & \multicolumn{1}{l|}{T} & 
+	  & &    \multicolumn{1}{l|}{$T^{[3]}$} & C & G & \$ & A & T & \cellcolor[HTML]{9B9B9B} G
+	  & & \multicolumn{1}{l|}{2} & 3     \\ 
+	  
+	  \multicolumn{1}{l|}{$T^{[3]}$} & C & G & \$ & A & T & \multicolumn{1}{l|}{G} & $\Rightarrow$
+	  & &    \multicolumn{1}{l|}{$T^{[4]}$} & G & \$ & A & T & G & \cellcolor[HTML]{9B9B9B} C
+	  & $\Rightarrow$ & \multicolumn{1}{l|}{3} & 4     \\ 
+	  
+	  \multicolumn{1}{l|}{$T^{[4]}$} & G & \$ & A & T & G & \multicolumn{1}{l|}{C} & 
+	  & &   \multicolumn{1}{l|}{$T^{[2]}$} & G & C & G & \$ & A & \cellcolor[HTML]{9B9B9B} T
+	  & & \multicolumn{1}{l|}{4} & 2     \\
+	  
+	  \multicolumn{1}{l|}{$T^{[5]}$} & \$ & A & T & G & C & \multicolumn{1}{l|}{G} &	
+	  & &    \multicolumn{1}{l|}{$T^{[1]}$} & T & G & C & G & \$ & \cellcolor[HTML]{9B9B9B} A
+	  & & \multicolumn{1}{l|}{5} & 1     \\
+	  
+	   \cline{2-7} \cline{11-16}
+	  			&	 &	 &	 &	 & 	 &					& & &			  &$F$&	  &	  &	  & & $L$	  \\
+ 
+\end{tabular}
+\caption{Burrows-Wheelerova transformacija niza $ATGCG\$$}
+\label{tablica:bwt}	
+\end{table}
+
 
 \section{Zaključak}
 \dodajliteraturu{bazaLiterature}
