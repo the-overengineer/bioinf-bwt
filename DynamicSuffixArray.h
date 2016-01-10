@@ -20,7 +20,7 @@ using namespace sbvtree;
 
 namespace dynsa {
 
-    enum Operation { none, inserting, deleting, replacing };
+    enum Operation { none, inserting, deleting, replacing, reordering };
 
     typedef uchar* ustring;
     
@@ -65,6 +65,8 @@ namespace dynsa {
          * @param <size_t> j - Destination row
          */
         void moveRow(size_t i, size_t j);
+    
+        void setText(ustring s, size_t length);
 
         void insertToText(uchar c, size_t position);
 
@@ -189,6 +191,12 @@ namespace dynsa {
          */
         size_t first_modification_position;
 
+
+        /**
+         * The number of modifications remaining
+         */
+        size_t modifications_remaining;
+
         /**
          * The last deleted symbol
          */
@@ -274,7 +282,7 @@ namespace dynsa {
          *
          * Might have to be corrected when other operations are added, TODO
          */
-        void reorder(size_t j, size_t insertion_point);
+        void reorder();
     };
 };
 

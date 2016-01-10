@@ -10,13 +10,10 @@ int main() {
     s[3] = (uchar) 'A';
     s[4] = (uchar) 0;
 
-    float* fs = DynRankS::createCharDistribution(s, 6, 1);
+    float* fs = DynRankS::createCharDistribution(s, 5, 1);
     dynsa::DynamicSuffixArray * a = new dynsa::DynamicSuffixArray(fs);
+    a->setText(s, 5);
 
-    a->insertToText('A', 1);
-    a->insertFactor(s, 1, 5);
-
-    cout << s << endl;
     cout << a->getText() << endl;
     cout << a->getBWT() << endl;
 

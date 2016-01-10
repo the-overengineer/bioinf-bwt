@@ -32,7 +32,7 @@ namespace dynsa {
     }
 
     void DynamicSuffixArray::insert(uchar c, size_t position) {
-        if(operation == inserting || operation == deleting) {
+        if(operation == inserting || operation == deleting || operation == replacing) {
             if(position <= previous_position) {
                 previous_position++;
             }
@@ -68,6 +68,16 @@ namespace dynsa {
         }
 
         this->C[i]--;
+
+        if(operation == inserting || operation == deleting || operation == replacing) {
+            if(previous_position >= position) {
+                previous_position--;
+            }
+
+            if(first_modification_position >= position) {
+                first_modification_position--;
+            }
+        }
     }
 
     void DynamicSuffixArray::moveRow(size_t i, size_t j) {
@@ -92,7 +102,6 @@ namespace dynsa {
         k = this->getISA(position);
        
         //Stores the position of T^[position-1] for reordering later
-        size_t previous_position = 0;
         uchar old_sym;
 
         //b) Perform the replacement, deleting the old char if there is one
@@ -137,7 +146,7 @@ namespace dynsa {
 
         //Finally, step IIb, REORDER. We give it 
         //The parameters are j and index(T'^[i]), from which j' is computed
-        reorder(previous_position, insertion_point);
+        //reorder(previous_position, insertion_point);
 
         //Perform the final update of our sampler
         sample->insertBWT(position);
@@ -146,69 +155,73 @@ namespace dynsa {
     void DynamicSuffixArray::insertFactor(ustring s, size_t position, size_t length) {
         position = MIN(position, this->size());
 
-        DUMP("x");
         //Step Ib modifies T^[position]
         //a) Find the position via sampling
-        k = this->getISA(position);
+        size_t pos_in_bwt = this->getISA(position);
+        size_t rank_of_deleted = 0;
 
         //b) Perform the replacement, deleting the old char if there is one
         if(! this->isEmpty()) {
-            old_sym = this->getBWTAt(k);
-            previous_position = countSymbolsSmallerThan(old_sym) + rank(old_sym, k);
-            this->L->deleteSymbol(k);
-        } else {
-            previous_position = countSymbolsSmallerThan(old_sym);
+            old_sym = this->getBWTAt(pos_in_bwt);
+            rank_of_deleted = rank(old_sym, pos_in_bwt);
+            this->L->deleteSymbol(pos_in_bwt);
         }
        
         //The last character of the string
         uchar c = s[length - 1];
 
-        insert(c, k); //Insert the replacement symbol
-        first_modification_position = k; //Update our first modification position in this run
+        this->insert(c, pos_in_bwt); //Insert the replacement symbol
+        first_modification_position = pos_in_bwt; //Update our first modification position in this run
 
+        insertion_point = pos_in_bwt;
         this->new_sym = c;
         this->operation = inserting;
+
+        previous_position = this->countSymbolsSmallerThan(old_sym) + rank_of_deleted;
 
         if(old_sym > new_sym) {
             previous_position--;
         }
 
+        size_t old_insertion_point = insertion_point;
+
         //Step IIa inserts a bunch of rows
-        size_t insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, k);
-        
-        //TODO check? Maybe only >= i instead of > i?
+        insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, insertion_point);
+
         for(size_t j = length - 1; j > 0; j--) {
            this->insert(s[j -1], insertion_point);
+           modifications_remaining = k;
            new_sym = s[j - 1];
 
            sample->insertBWT(position, insertion_point);
-
-           k = insertion_point;
+           old_insertion_point = insertion_point;
 
            insertion_point = this->countSymbolsSmallerThan(s[j - 1]) + this->rank(s[j - 1], insertion_point);
 
-           if(first_modification_position < k && s[j - 1] == old_sym) {
+           if(first_modification_position < old_insertion_point && s[j - 1] == old_sym) {
              insertion_point++;
            }
         }
 
         new_sym = old_sym;
         L->insert(old_sym, insertion_point);
+        modifications_remaining = 0;
 
         if(insertion_point <= previous_position) {
             previous_position++;
         }
 
+
         if(insertion_point <= first_modification_position) {
             first_modification_position++;
         }
-        
+
         //Update our sampler. I honestly still have no idea what the sampler does
         sample->insertBWT(position, insertion_point);
 
         //Finally, step IIb, REORDER. We give it 
         //The parameters are j and index(T'^[i]), from which j' is computed
-        reorder(previous_position, insertion_point);
+        reorder();
 
         //Perform the final update of our sampler
         sample->insertBWT(position);
@@ -220,6 +233,13 @@ namespace dynsa {
 
     void DynamicSuffixArray::replace(ustring s, size_t position, size_t size) {
         //TODO replace
+    }
+
+    void DynamicSuffixArray::setText(ustring s, size_t size) {
+        this->insert(s[size - 1], 1);
+        sample->insertBWT(1, 1);
+        sample->insertBWT(1);
+        this->insertFactor(s, 1, size - 1);
     }
 
     ustring DynamicSuffixArray::getBWT() {
@@ -252,7 +272,7 @@ namespace dynsa {
     }
 
     ustring DynamicSuffixArray::getText() {
-        size_t N = this->size() + 1;
+        size_t N = this->size();
             ustring text = new uchar[N];
         
         //TODO what about fetching the text during substitution?
@@ -260,9 +280,11 @@ namespace dynsa {
         
         for(size_t i = N - 1, j = 1; i > 0; i--) {
             text[i - 1] = this->getBWTAt(j);
-            cout << "text[" << i - 1 << "] = " << text[i - 1] << ", j = " << j << endl;
+            if(operation == inserting && j == insertion_point) {
+                text[i - 1] = old_sym;
+            }
+
             j = this->LF(j);
-            cout << "j' = " << j << endl;
         }
 
         //Set the EOS
@@ -274,7 +296,13 @@ namespace dynsa {
 
 
     size_t DynamicSuffixArray::rank(uchar c, size_t i) {
-        return this->L->rank(c, i); //TODO special case handling during operations!
+        size_t r = this->L->rank(c, i);
+
+        if(operation == deleting && first_modification_position < i && old_sym == c) {
+            r--;
+        }
+
+        return r;
     }
 
     size_t DynamicSuffixArray::size() {
@@ -335,7 +363,19 @@ namespace dynsa {
         size_t r = this->rank(c, i);
 
         if(operation != none) {
-            if(operation == inserting) {
+            if(operation == reordering || (operation == inserting && modifications_remaining == 0)) {
+                uchar c2 = this->getBWTAt(insertion_point);
+                size_t tempLF = this->countSymbolsSmallerThan(c2) + this->rank(c2, insertion_point);
+                size_t result = smaller + r;
+                
+                if(result <= tempLF && result >= previous_position) {
+                    result++;
+                } else if(result >= tempLF && result <= previous_position) {
+                    result--;
+                }
+
+                return result;
+            } else if(operation == inserting) {
                 uchar other = this->getBWTAt(insertion_point);
                 if(other == old_sym && i > first_modification_position) {
                     r++;
@@ -398,15 +438,31 @@ namespace dynsa {
         return floor(i / 2);
     }
 
-    void DynamicSuffixArray::reorder(size_t j, size_t insertion_point) {
-        size_t j_comp = this->LF(insertion_point);
-        size_t new_j = 0;
+    void DynamicSuffixArray::reorder() {
+        operation = reordering;
+        uchar L_store = new_sym;
+        size_t expected_position = this->countSymbolsSmallerThan(L_store) + this->rank(L_store, insertion_point);
 
-        while(j != j_comp) {
-            new_j = this->LF(j);
-            moveRow(j, j_comp);
-            j = new_j;
-            j_comp = this->LF(j_comp);
+        size_t smaller = this->countSymbolsSmallerThan(L_store);
+
+        while(expected_position != previous_position) {
+            DUMP("x " << previous_position);
+            L_store = this->getBWTAt(previous_position);
+            smaller = this->countSymbolsSmallerThan(L_store);
+
+            size_t tmp_prev_pos = rank(L_store, previous_position) + smaller;
+
+            this->del(previous_position);
+            this->insert(L_store, expected_position);
+
+            sample->moveBWT(previous_position, expected_position);
+
+            insertion_point = expected_position;
+            previous_position = tmp_prev_pos;
+            expected_position = smaller + rank(L_store, insertion_point);
         }
+
+        operation = none;
+        insertion_point = expected_position;
     }
 }
