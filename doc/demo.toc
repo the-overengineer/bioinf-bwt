@@ -1,0 +1,5 @@
+\select@language {croatian}
+\contentsline {section}{\numberline {1.}Uvod}{1}{section.1}
+\contentsline {section}{\numberline {2.}Poglavlja seminara}{2}{section.2}
+\contentsline {section}{\numberline {3.}Zaklju\IeC {\v c}ak}{3}{section.3}
+\contentsline {section}{\numberline {4.}Sa\IeC {\v z}etak}{4}{section.4}
