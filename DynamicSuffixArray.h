@@ -72,7 +72,8 @@ namespace dynsa {
 
         /**
          * Inserts a factor (string) of given size into the text at
-         * some position.
+         * some position. If the position is BEHIND the end of the
+         * text, the factor will simply be appended.
          *
          * @param <ustring> s - String to insert into text
          * @param <size_t> position - Position at which the insertion is happening
@@ -81,11 +82,13 @@ namespace dynsa {
         void insertFactor(ustring s, size_t position, size_t length);
 
         /**
-         * Deletes the character at a given position in the text.
+         * Deletes <length> characters at a given <position> in the text.
+         * The method will never delete more of the string than there exists.
          *
          * @param <size_t> position - Position of deleted character in text
+         * @param <size_t> length - The length of the deleted substring.
          */
-        void deleteAt(size_t position);
+        void deleteAt(size_t position, size_t length);
 
         /**
          * Performs replacement of a substring in the text.
@@ -97,7 +100,7 @@ namespace dynsa {
          * @param <size_t> size - Size of the replacement substring, and, as such
          *                        the count of chars replaced by the operation
          */
-        void replace(ustring s, size_t position, size_t size);
+        void replace(ustring s, size_t position, size_t length);
 
         /**
          * Yields the current BWT of the text

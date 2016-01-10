@@ -220,18 +220,65 @@ namespace dynsa {
         sample->insertBWT(position, insertion_point);
 
         //Finally, step IIb, REORDER. We give it 
-        //The parameters are j and index(T'^[i]), from which j' is computed
         reorder();
 
         //Perform the final update of our sampler
         sample->insertBWT(position);
     }
 
-    void DynamicSuffixArray::deleteAt(size_t position) {
-        //TODO deleteAt
+    void DynamicSuffixArray::deleteAt(size_t position, size_t length) {
+        if(length <= 0) {
+            return; //Nothing to do here
+        }
+
+        size_t end_position = position + length - 1; //The end of the deleted block
+        size_t rank_of_deleted;
+
+        uchar last_symbol;
+
+        //Make sure we do not delete the '\0' or anything outside of the string
+        if(end_position > this->size()) {
+            length = this->size() - position + 1;
+        }
+
+        //Sample the ISA for the last character in the substring
+        first_modification_position = this->getISA(length + position);
+        old_sym = this->getBWTAt(first_modification_position);
+
+        //Notify the object that we are deleting (for various off-by-one error resolving)
+        operation = deleting;
+
+        insertion_point = this->countSymbolsSmallerThan(old_sym) + rank(old_sym, first_modification_position);
+
+        //Actually delete the substring
+        for(size_t i = length + position - 1; i >= position; i--) {
+            last_symbol = this->getBWTAt(insertion_point);
+            rank_of_deleted = this->rank(last_symbol, insertion_point);
+            
+            this->del(insertion_point);
+            this->sample->deleteBWT(i, insertion_point);
+            
+            if(i == position) {
+                break;
+            }
+
+            insertion_point = this->countSymbolsSmallerThan(last_symbol) + rank_of_deleted;
+        }
+
+        previous_position = this->countSymbolsSmallerThan(last_symbol) + rank_of_deleted;
+        
+        insertion_point = first_modification_position;
+        this->del(insertion_point);
+        this->new_sym = last_symbol;
+        insert(last_symbol, insertion_point);
+
+        reorder();
+        
+        //Perform a final sampler update
+        this->sample->deleteBWT(position);
     }
 
-    void DynamicSuffixArray::replace(ustring s, size_t position, size_t size) {
+    void DynamicSuffixArray::replace(ustring s, size_t position, size_t length) {
         //TODO replace
     }
 
@@ -335,8 +382,11 @@ namespace dynsa {
             i = parent;
         }
 
-        //TODO handle deleting? How should we do that? Use a flag like in the original?
-        return cnt;
+        /** 
+         * We have not yet deleted the symbol from the tree, so we must move any
+         * characters that would appear afterwards in F backwards one spot.
+         */
+        return (operation == deleting && c > old_sym) ? cnt - 1 : cnt;
     }
 
 
