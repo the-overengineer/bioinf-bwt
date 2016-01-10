@@ -62,9 +62,7 @@ int main( int argc, char* const argv[]){
     return result;
 }
 
-TEST_CASE("setText sets short text", "setTextShort"){
-    
-    
+TEST_CASE("setText sets short text", "[short]"){
     ustring s = (ustring) "GTGAGTGAG";
     ustring bwt = (ustring) "GGGATTA$GG";
     a->setText(s, 10);
@@ -75,18 +73,15 @@ TEST_CASE("setText sets short text", "setTextShort"){
     REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
 }
 
-TEST_CASE("Zero equals zero", "[zero]"){
-    REQUIRE( 0 == 0 );
-}
-
-ullong getTime() {
-    struct timeval time;
-    time_t sec;
-    suseconds_t usec;
-    if (gettimeofday(&time,NULL) != -1) {
-        sec = time.tv_sec;
-        usec = time.tv_usec;
-        return (ullong)sec*1000000+usec;
-    }
-    return 0;
+TEST_CASE("Short insert", "[short]"){
+    ustring s = (ustring) "GAAGT";
+    a->insertFactor(s, 3, 5);
+    
+    s = (ustring) "GTGAAGTGAGTGAG";
+    ustring bwt = (ustring) "GGGGAATTT$AAGGG";
+    int sz = sizeof(s);
+    
+    CHECK( memcmp(a->getText(), s, sz) == 0);
+    sz = sizeof(bwt);
+    REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
 }
