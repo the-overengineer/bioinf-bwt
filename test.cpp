@@ -17,5 +17,15 @@ int main() {
     cout << a->getText() << endl;
     cout << a->getBWT() << endl;
 
+    a->deleteAt(1, 2);
+
+    cout << a->getText() << endl;
+    cout << a->getBWT() << endl;
+
+    a->deleteAt(1, 1);
+
+    cout << a->getText() << endl;
+    cout << a->getBWT() << endl;
+
     return 0;
 }
