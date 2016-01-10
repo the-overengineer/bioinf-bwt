@@ -1,12 +1,24 @@
 \documentclass{ferseminar}
-\student{Ime Prezime}
-\voditelj{prof.~dr.~sc.~Ime Prezime}
-\mjestodatum{Zagreb}{travanj}{2011}
-\naslov{Naslov seminarskog rada}
+
+
+
+\student{Antonio Benc, Matija Herceg, Luka Skukan}
+\voditelj{doc. dr. sc. Mirjana Domazet-Lošo}
+\mjestodatum{Zagreb}{siječanj}{2016}
+\naslov{Algoritam za ažuriranje Burrows-Wheelerove transformacije u četiri koraka}
+
+
 \begin{document}
 \stvoripredstranice
 \section{Uvod}
+Burrows-Wheelerova transformacija (BWT) je transformacija teksta, vrlo prikladna za kompresiju. Korištena je u nekim popularnim alatima za kompresiju bez gubitaka, primjerice programu bzip2.  Osim pod nazivom Burrows-Wheelerova transformacija, poznata je i pod nazivom \textit{block-sorting compression}. 
+\subparagraph{}
+Konceptualno, tekst nad kojim je izvršena BWT je sličan sufiksnom polju. Zbog te sličnosti BWT se koristi i kao indeksna struktura. BWT teksta $T$ ($bwt(t)$) se često dobiva iz modifikacije sufiksnog polja koja konstrukcija ima $O(n)$ složenost. Pohranjivanje sufiksnog polja u memoriji je jos uvjek glavni problem jer zahtjeva n $n\log{}n$ bita dok pohrana BWT-a u memoriju zahtjeva $(n\log{}\sigma)$ bita, gdje je $\sigma$ broj slova u abecedi.
+\subparagraph{}
+U ovom seminaru razmatrat će se uobičajne operacije nad tekstom, umetanje znakova, brisanje znakova ili mijenjanje znaka, koje tekst $T$ transformiraju u novi tekst $T'$. Biti će proučavan utjecaj tih operacija na $bwt(T)$ i biti će predložen algoritam za pretvorbu $bwt(T)$ u $bwt(T')$.
+
 \section{Poglavlja seminara}
+
 \section{Zaključak}
 \dodajliteraturu{bazaLiterature}
 \section{Sažetak}
