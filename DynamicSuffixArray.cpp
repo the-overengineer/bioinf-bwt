@@ -274,7 +274,11 @@ namespace dynsa {
 
 
     size_t DynamicSuffixArray::rank(uchar c, size_t i) {
-        return this->L->rank(c, i); //TODO special case handling during operations!
+        size_t ret = this->L->rank(c,i);
+        //Special case handling during modifications
+        if (this->operation == deleting && this->first_modification_position < i && this->old_sym == c)
+            ret--;
+        return ret;
     }
 
     size_t DynamicSuffixArray::size() {
