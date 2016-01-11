@@ -1,14 +1,18 @@
 \documentclass{ferseminar}
 
 \usepackage[table,xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
 
+\usetikzlibrary{tikzmark}
+\tikzset{every picture/.style=remember picture}
 
 \student{Antonio Benc, Matija Herceg, Luka Skukan}
 \voditelj{doc. dr. sc. Mirjana Domazet-Lošo}
 \mjestodatum{Zagreb}{siječanj}{2016}
 \naslov{Algoritam za ažuriranje Burrows-Wheelerove transformacije u četiri koraka}
 
-
+\setlength{\footskip}{20pt}
 \begin{document}
 \stvoripredstranice
 \section{Uvod}
@@ -92,6 +96,54 @@ gdje je $C_T$ broj znakova u nizu manjih od znaka $L[p]$, $rank_{L[p]}(L,p)$ bro
 Stupac L, odnosno BWT je konceptualno blizak sufiksnom polju, a povezuje ih jednostavna transformacija. Stoga se većina algoritama za konstrukciju BWT-a bazira na postoječim algoritmima za računanje sufiksnog polja s kompleksnošću $O(n)$ i primjeni transformacije sufiksnog polja u BWT.
 \subparagraph{}
 Jednostavna transformacija niza $T$ u niz $T'$ uzrokuje da se BWT od $T'$ mora računati od nule. U nastavku seminara biti će proučeno kako jednostavne operacije nad nizom $T$ utječu na $bwt(T)$. 
+\section{Opis algoritma}
+Opis će biti temeljen na slučaju kada se u niz umeće samo jedan znak. Na temelju toga biti će predstavljen algoritam u četiri koraka za ažiriranje BWT-a. Kako bi se mogao ažurirati BWT, potrebno je i ažurirati parcijalne sume (gore objasniti parcijalne sume znakova). Zatim će se taj pristup proširiti na više znakova i na zamjenu i brisanje znakova.
+\subparagraph{}
+BWT je usko povezan s leksičkim sortiranjem svih cikličkih pomaka niza $T'$. Pretpostavka je da se u niz $T$ umeće slovo $c$ na poziciju $i$. Prema tome, postoje 4 slučaja koji su opisani slikom \ref{tablica:pozicije}. 
+
+\begin{figure}[h]
+\scriptsize
+\[ 
+T'^{[j]}=\left \{
+  \begin{tabular}{rcllc}
+  $T[j-i\ .. \ n-1]$ & $\$$ & $T[0 \ .. \ i-1]\quad c\quad  T[i \ .. \ j-2]$ & ako je $i+1<j\leq n+1$ & (Ia)\\
+  $T[i \ .. \ n-1]$ & $\$$  & $T[0 \ .. \ i-1] \quad c$ & ako je $j= n+1$ & (Ib)\\
+  $c \quad T[i \ .. \ n-1]$ & $\$$  & $T[0 \ .. \ i-1] \quad$ & ako je $j=1$ & (IIa)\\
+  $T[j \ .. \ i-1] \quad c \quad T[i \ .. \ n-1]$ & $\$$  & $T[0 \ .. \ j-1]$ & ako je $0 \leq j< 1$ & (IIb)\\
+  
+  \end{tabular}
+\right.
+\]
+\small
+\begin{tabular}{ccccccc}
+ \cline{1-3} \cline{5-7}
+ \multicolumn{3}{|c|}{(II)\tikzmark{II}} & $\$$ & \multicolumn{3}{|c|}{(I)\tikzmark{I} }\\
+ \cline{1-3} \cline{5-7}
+  & & & & & & \\
+  \cline{1-1}  \cline{3-3} \cline{5-5} \cline{7-7}
+  \multicolumn{1}{|c|}{(IIa)\tikzmark{IIa}}& & \multicolumn{1}{|c|}{$\qquad$(IIb)\tikzmark{IIb}$\qquad$} & $\$$ &\multicolumn{1}{|c|}{$\qquad$(Ia)\tikzmark{Ia}$\qquad$} & & \multicolumn{1}{|c|}{(Ib)\tikzmark{Ib}} \\
+   \cline{1-1}  \cline{3-3} \cline{5-5} \cline{7-7}
+  
+ 
+
+\end{tabular}
+\begin{tikzpicture}[overlay, remember picture, yshift=.25\baselineskip, shorten >=.5pt, shorten <=.5pt]
+    \draw [->] ([xshift=-6pt,yshift=-8pt]{pic cs:II})  to ([xshift=-6pt,yshift=8pt]{pic cs:IIa});
+    \draw [->] ([xshift=-6pt,yshift=-8pt]{pic cs:II})  to ([xshift=-8pt,yshift=8pt]{pic cs:IIb});
+    
+    \draw [->] ([xshift=-6pt,yshift=-8pt]{pic cs:I})  to ([xshift=-8pt,yshift=8pt]{pic cs:Ia});
+    \draw [->] ([xshift=-6pt,yshift=-8pt]{pic cs:I})  to ([xshift=-8pt,yshift=8pt]{pic cs:Ib});
+    
+\end{tikzpicture}
+
+
+\caption{Moguće pozicije znaka $c$ u cikličkim rotacijama}
+\label{tablica:pozicije}
+\end{figure}
+
+
+\normalsize
+
 
 \section{Zaključak}
 \dodajliteraturu{bazaLiterature}
