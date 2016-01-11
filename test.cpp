@@ -1,8 +1,13 @@
 #include "DynamicSuffixArray.h"
+#define CATCH_CONFIG_RUNNER
+#include "catch.hpp"
+#include <string.h>
+#include <time.h>
+#include <sys/time.h>
 
 using namespace std;
 
-int main() {
+/*int main() {
     dynsa::ustring s = new uchar[5];
     s[0] = (uchar) 'G';
     s[1] = (uchar) 'T';
@@ -28,4 +33,55 @@ int main() {
     cout << a->getBWT() << endl;
 
     return 0;
+}
+*/
+
+ullong getTime();
+
+dynsa::DynamicSuffixArray *a;
+
+int main( int argc, char* const argv[]){
+    
+    dynsa::ustring s = new uchar[10];
+    s[0] = (uchar) 'G';
+    s[1] = (uchar) 'T';
+    s[2] = (uchar) 'G';
+    s[3] = (uchar) 'A';
+    s[4] = (uchar) 'G';
+    s[5] = (uchar) 'T';
+    s[6] = (uchar) 'G';
+    s[7] = (uchar) 'A';
+    s[8] = (uchar) 'G';
+    s[9] = (uchar) 0;
+
+    float* fs = DynRankS::createCharDistribution(s, 10, 1);
+    a = new dynsa::DynamicSuffixArray(fs);
+    
+    int result = Catch::Session().run(argc, argv);
+    
+    return result;
+}
+
+TEST_CASE("setText sets short text", "[short]"){
+    ustring s = (ustring) "GTGAGTGAG";
+    ustring bwt = (ustring) "GGGATTA$GG";
+    a->setText(s, 10);
+    int sz = sizeof(s);
+    
+    CHECK( memcmp(a->getText(), s, sz) == 0);
+    sz = sizeof(bwt);
+    REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
+}
+
+TEST_CASE("Short insert", "[short]"){
+    ustring s = (ustring) "GAAGT";
+    a->insertFactor(s, 3, 5);
+    
+    s = (ustring) "GTGAAGTGAGTGAG";
+    ustring bwt = (ustring) "GGGGAATTT$AAGGG";
+    int sz = sizeof(s);
+    
+    CHECK( memcmp(a->getText(), s, sz) == 0);
+    sz = sizeof(bwt);
+    REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
 }

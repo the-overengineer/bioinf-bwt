@@ -12,5 +12,5 @@ rbtree.o: rbtree.cpp rbtree.h types.h
 sbvtree.o: sbvtree.cpp sbvtree.h rbtree.h types.h
 test.o: test.cpp DynamicSuffixArray.h types.h gRankS.h sbvtree.h rbtree.h \
  intTree.h customTree.h DSASampling.h lpermutation.h linkedTree.h \
- lfMappable.h
+ lfMappable.h catch.hpp
 utils.o: utils.cpp utils.h types.h
