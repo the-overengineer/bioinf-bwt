@@ -36,15 +36,17 @@ using namespace std;
 }
 */
 
-ullong getTime();
 
+//Common variables for some tests
 dynsa::DynamicSuffixArray *a;
+ustring dist_string;
+float *fs;
 
 int main( int argc, char* const argv[]){
     
-    ustring s = (ustring) "CCGAACACCCGTACCGAGGTGAGCACCCTCTGCATCAGCCAGTTCCGCTACAGCGCACAAATCCGTCCTTCTTCCGTAGTGACCAAAGACTACACCTTTAAACGCCCCGGCTGGGCCGGACGTTTTGAACAGGAAGGCCAGCACCAGGACTACCAGCGCACGCAGTATGAAGTGTATGACTACCCCGGACGTTTCAAGAGCGCCCACGGGCAGAACTTTGCCCGCTGGCAGATGGACGGCTGGCGAAACAACGCAGAAACCGCGCGGGGAATGAGCCGCTCGCCGGAGATATGGCCGGGACGGCGAATTGTGCTGACGGGGCATCCGCAGGCGAACCTGAACCGGGAATGGCAGGTGGTGGCAAGTGAACTGCACGGCGAACAGCCACAGGCGGTGCCAGGACGGCAGGGAGCGGGGACGGCGCTGGAGAACCATTTTGCGGTGATCCCGGCAGACAGAACATGGCGACCACAGCCGTTGCTGAAACCGCTGGTCGACGGCCCGCAGAGCGC";
+    dist_string = (ustring) "CCGAACACCCGTACCGAGGTGAGCACCCTCTGCATCAGCCAGTTCCGCTACAGCGCACAAATCCGTCCTTCTTCCGTAGTGACCAAAGACTACACCTTTAAACGCCCCGGCTGGGCCGGACGTTTTGAACAGGAAGGCCAGCACCAGGACTACCAGCGCACGCAGTATGAAGTGTATGACTACCCCGGACGTTTCAAGAGCGCCCACGGGCAGAACTTTGCCCGCTGGCAGATGGACGGCTGGCGAAACAACGCAGAAACCGCGCGGGGAATGAGCCGCTCGCCGGAGATATGGCCGGGACGGCGAATTGTGCTGACGGGGCATCCGCAGGCGAACCTGAACCGGGAATGGCAGGTGGTGGCAAGTGAACTGCACGGCGAACAGCCACAGGCGGTGCCAGGACGGCAGGGAGCGGGGACGGCGCTGGAGAACCATTTTGCGGTGATCCCGGCAGACAGAACATGGCGACCACAGCCGTTGCTGAAACCGCTGGTCGACGGCCCGCAGAGCGC";
 
-    float* fs = DynRankS::createCharDistribution(s, 10, 1);
+    fs = DynRankS::createCharDistribution(dist_string, 512, 1);
     a = new dynsa::DynamicSuffixArray(fs);
     
     int result = Catch::Session().run(argc, argv);
@@ -52,7 +54,7 @@ int main( int argc, char* const argv[]){
     return result;
 }
 
-TEST_CASE("setText sets short text", "[short]"){
+TEST_CASE("Short setText", "[short]"){
     ustring s = (ustring) "GTGAGTGAG";
     ustring bwt = (ustring) "GGGATTA$GG";
     a->setText(s, 10);
@@ -85,4 +87,23 @@ TEST_CASE("Short delete", "[short]"){
     CHECK( memcmp(a->getText(), s, sz) == 0);
     sz = sizeof(bwt);
     REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
+}
+
+TEST_CASE("1031 long bwt verification - test1", "[verification]"){
+    
+    FILE* input = fopen("testdata/test1/GCA_000731455_1031.in", "r");
+    ustring s = new uchar[1033];
+    fscanf(input," %s", s);
+    fclose(input);
+    
+    FILE* expected = fopen("testdata/test1/GCA_000731455_1031.out", "r");
+    ustring bwt = new uchar[1033];
+    fscanf(expected," %s", bwt);
+    int sz = sizeof(bwt);
+    
+    a = new dynsa::DynamicSuffixArray(fs);
+    a -> setText(s, 1031);
+    cout << a -> getBWT() << endl;
+    cout << bwt << endl;
+    REQUIRE(memcmp(a -> getBWT(), bwt, sz) == 0);
 }
