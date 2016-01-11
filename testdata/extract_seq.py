@@ -10,7 +10,7 @@ with open(args.inp, 'r') as inp:
 	content = inp.read()
 for i in content.split('>')[1:]:
 	i = ''.join(i.split('\n')[1:])
-	outname = args.inp.split('.')[1] + '_' + str(len(i))
+	outname = args.inp.split('.')[1] + '_' + str(len(i)) + '.in'
 	out = open(outname, 'w')
 	out.write(i)
 	out.close()
