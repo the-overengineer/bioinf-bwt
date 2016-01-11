@@ -99,11 +99,46 @@ TEST_CASE("1031 long bwt verification - test1", "[verification]"){
     FILE* expected = fopen("testdata/test1/GCA_000731455_1031.out", "r");
     ustring bwt = new uchar[1033];
     fscanf(expected," %s", bwt);
+    fclose(expected);
     int sz = sizeof(bwt);
     
     a = new dynsa::DynamicSuffixArray(fs);
-    a -> setText(s, 1031);
-    cout << a -> getBWT() << endl;
-    cout << bwt << endl;
+    a -> setText(s, 1032);
+    REQUIRE(memcmp(a -> getBWT(), bwt, sz) == 0);
+}
+
+TEST_CASE("5385 long bwt verification - test2", "[verification]"){
+    
+    FILE* input = fopen("testdata/test2/GCA_000731455_5385.in", "r");
+    ustring s = new uchar[5388];
+    fscanf(input," %s", s);
+    fclose(input);
+    
+    FILE* expected = fopen("testdata/test2/GCA_000731455_5385.out", "r");
+    ustring bwt = new uchar[5388];
+    fscanf(expected," %s", bwt);
+    fclose(expected);
+    int sz = sizeof(bwt);
+    
+    a = new dynsa::DynamicSuffixArray(fs);
+    a -> setText(s, 5386);
+    REQUIRE(memcmp(a -> getBWT(), bwt, sz) == 0);
+}
+
+TEST_CASE("35970 long bwt verification - test3", "[verification]"){
+    
+    FILE* input = fopen("testdata/test3/GCA_000731455_35970.in", "r");
+    ustring s = new uchar[35972];
+    fscanf(input," %s", s);
+    fclose(input);
+    
+    FILE* expected = fopen("testdata/test3/GCA_000731455_35970.out", "r");
+    ustring bwt = new uchar[35972];
+    fscanf(expected," %s", bwt);
+    fclose(expected);
+    int sz = sizeof(bwt);
+    
+    a = new dynsa::DynamicSuffixArray(fs);
+    a -> setText(s, 35971);
     REQUIRE(memcmp(a -> getBWT(), bwt, sz) == 0);
 }
