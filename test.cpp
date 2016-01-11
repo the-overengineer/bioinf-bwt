@@ -44,7 +44,7 @@ float *fs;
 
 int main( int argc, char* const argv[]){
     
-    dist_string = (ustring) "CCGAACACCCGTACCGAGGTGAGCACCCTCTGCATCAGCCAGTTCCGCTACAGCGCACAAATCCGTCCTTCTTCCGTAGTGACCAAAGACTACACCTTTAAACGCCCCGGCTGGGCCGGACGTTTTGAACAGGAAGGCCAGCACCAGGACTACCAGCGCACGCAGTATGAAGTGTATGACTACCCCGGACGTTTCAAGAGCGCCCACGGGCAGAACTTTGCCCGCTGGCAGATGGACGGCTGGCGAAACAACGCAGAAACCGCGCGGGGAATGAGCCGCTCGCCGGAGATATGGCCGGGACGGCGAATTGTGCTGACGGGGCATCCGCAGGCGAACCTGAACCGGGAATGGCAGGTGGTGGCAAGTGAACTGCACGGCGAACAGCCACAGGCGGTGCCAGGACGGCAGGGAGCGGGGACGGCGCTGGAGAACCATTTTGCGGTGATCCCGGCAGACAGAACATGGCGACCACAGCCGTTGCTGAAACCGCTGGTCGACGGCCCGCAGAGCGC";
+    dist_string = (ustring) "CCGAACACCCGTACCGAGGTGAGCACCCTCTGCATCAGCCAGTTCCGCTACAGCGCACAAATCCGTCCTTCNNNNNNNNNNNNNNNNNNNTTCCGTAGTGACCAAAGACTACACCTTTAAACGCCCCGGCTGGGCCGGACGTTTTGAACAGGAAGGCCAGCACCAGGACTACCAGCGCACGCAGTATGAAGTGTATGACTACCCCGGACGTTTCAAGAGCGCCCACGGGCAGAACTTTGCCCGCTGGCAGATGGACGGCTGGCGAAACAACGCAGAAACCGCGCGGGGAATGAGCCGCTCGCCGGAGATATGGCCGGGACGGCGAATTGTGCTGACGGGGCATCCGCAGGCGAACCTGAACCGGGAATGGCAGGTGGTGGCAAGTGAACTGCACGGCGAACAGCCACAGGCGGTGCCAGGACGGCAGGGAGCGGGGACGGCGCTGGAGAACCATTTTGCGGTGATCCCGGCAGACAGAACATGGCGACCACAGCCGTTGCTGAAACCGCTGGTCGACGGCCCGCAGAGCGC";
 
     fs = DynRankS::createCharDistribution(dist_string, 512, 1);
     a = new dynsa::DynamicSuffixArray(fs);
@@ -58,10 +58,10 @@ TEST_CASE("Short setText", "[short]"){
     ustring s = (ustring) "GTGAGTGAG";
     ustring bwt = (ustring) "GGGATTA$GG";
     a->setText(s, 10);
-    int sz = sizeof(s);
+    int sz = strlen((char*)s);
     
     CHECK( memcmp(a->getText(), s, sz) == 0);
-    sz = sizeof(bwt);
+    sz = strlen((char*)bwt);
     REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
 }
 
@@ -71,10 +71,10 @@ TEST_CASE("Short insert", "[short]"){
     
     s = (ustring) "GTGAAGTGAGTGAG";
     ustring bwt = (ustring) "GGGGAATTT$AAGGG";
-    int sz = sizeof(s);
+    int sz = strlen((char*)s);
     
     CHECK( memcmp(a->getText(), s, sz) == 0);
-    sz = sizeof(bwt);
+    sz = strlen((char*)bwt);
     REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
 }
 
@@ -83,9 +83,9 @@ TEST_CASE("Short delete", "[short]"){
     ustring bwt = (ustring) "GGGATTA$GG";
     a -> deleteAt(3,5);
     
-    int sz = sizeof(s);
+    int sz = strlen((char*)s);
     CHECK( memcmp(a->getText(), s, sz) == 0);
-    sz = sizeof(bwt);
+    sz = strlen((char*)bwt);
     REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
 }
 
@@ -100,7 +100,7 @@ TEST_CASE("1031 long bwt verification - test1", "[verification]"){
     ustring bwt = new uchar[1033];
     fscanf(expected," %s", bwt);
     fclose(expected);
-    int sz = sizeof(bwt);
+    int sz = strlen((char*)bwt);
     
     a = new dynsa::DynamicSuffixArray(fs);
     a -> setText(s, 1032);
@@ -118,7 +118,7 @@ TEST_CASE("5385 long bwt verification - test2", "[verification]"){
     ustring bwt = new uchar[5388];
     fscanf(expected," %s", bwt);
     fclose(expected);
-    int sz = sizeof(bwt);
+    int sz = strlen((char*)bwt);
     
     a = new dynsa::DynamicSuffixArray(fs);
     a -> setText(s, 5386);
@@ -136,9 +136,22 @@ TEST_CASE("35970 long bwt verification - test3", "[verification]"){
     ustring bwt = new uchar[35972];
     fscanf(expected," %s", bwt);
     fclose(expected);
-    int sz = sizeof(bwt);
+    int sz = strlen((char*)bwt);
     
     a = new dynsa::DynamicSuffixArray(fs);
     a -> setText(s, 35971);
     REQUIRE(memcmp(a -> getBWT(), bwt, sz) == 0);
+}
+
+TEST_CASE("176616 long time monitor - test4", "[time]"){
+    
+    FILE* input = fopen("testdata/test4/GCA_000731455_176616.in", "r");
+    ustring s = new uchar[176620];
+    fscanf(input," %s", s);
+    fclose(input);
+    
+    a = new dynsa::DynamicSuffixArray(fs);
+    int sz = strlen((char*)s);
+    a -> setText(s, 176617);
+    REQUIRE(memcmp(a -> getText(), s, sz) == 0);
 }
