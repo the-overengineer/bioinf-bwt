@@ -1,0 +1,13 @@
+\select@language {croatian}
+\contentsline {section}{\numberline {1.}Uvod}{1}{section.1}
+\contentsline {subparagraph}{}{1}{section*.1}
+\contentsline {subparagraph}{}{1}{section*.2}
+\contentsline {section}{\numberline {2.}Burrows-Wheelerova transformacija}{2}{section.2}
+\contentsline {subparagraph}{}{2}{section*.3}
+\contentsline {subparagraph}{}{2}{table.1}
+\contentsline {subparagraph}{}{2}{section*.5}
+\contentsline {subparagraph}{}{2}{section*.6}
+\contentsline {subparagraph}{}{3}{section*.7}
+\contentsline {subparagraph}{}{3}{section*.8}
+\contentsline {section}{\numberline {3.}Zaklju\IeC {\v c}ak}{4}{section.3}
+\contentsline {section}{\numberline {4.}Sa\IeC {\v z}etak}{5}{section.4}

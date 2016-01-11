@@ -61,37 +61,7 @@ Burrows-Wheelerova transformacija od $T$, oznacena s $bwt(T)$, je tekst duljine 
 \caption{Burrows-Wheelerova transformacija niza $ATGCG\$$}
 \label{tablica:bwt}	
 \end{table}
-\subparagraph{}
-Tablicom \ref{tablica:bwt} prikazana je Burrows-Wheelerova transformacija niza znakova $ATGCG\$$. U tablici lijevo prikazani su svi ciklički pomaci tog niza. U tablici na sredini ti ciklički pomaci su leksikografski sortirani i oznaceni su stupci $F$ i $L$. U tablici desno prikazan je niz brojeva koji predstavlja redove sortiranih cikličkih pomaka, ujedno i sufiksno polje od niza.
-\subparagraph{}
-Burrows-Wheelerova transformacija sadrži samo zadnji stupac sortirane matrice cikličkih pomaka L. Za rekonstrukciju počenog niza niza $T$ iz $bwt(t)$ koristi se veza između stupca L i stupca F. Ako znakovima u primjeru s $ATGCG\$$ svakom znaku dodamo broj koji oznacava redni broj pojavljivanja tog slova dobivamo $A_{1}T_{1}G_{1}C_{1}G_{2}\$_{1}$.
-\begin{table}[h]
-\begin{center}
 
-
-\begin{tabular}{r c c c c c c}
-	\multicolumn{1}{l|}{$T^{[5]}$} & $\$_{1}$ & $A_{1}$ & $T_{1}$ & $G_{1}$ & $C_{1}$ & \cellcolor[HTML]{9B9B9B} $G_{2}$ \\
-	\multicolumn{1}{l|}{$T^{[0]}$} & $A_{1}$ & $T_{1}$ & $G_{1}$ & $C_{1}$ & $G_{2}$ & \cellcolor[HTML]{9B9B9B} $\$_{0}$ \\
-	\multicolumn{1}{l|}{$T^{[3]}$} & $C_{1}$ & $G_{2}$ & $\$_{1}$ & $A_{1}$ & $T_{1}$ & \cellcolor[HTML]{9B9B9B} $G_{1}$ \\
-	\multicolumn{1}{l|}{$T^{[4]}$} & $G_{2}$ & $\$_{1}$ & $A_{1}$ & $T_{1}$ & $G_{1}$ & \cellcolor[HTML]{9B9B9B} $C_{1}$ \\
-	\multicolumn{1}{l|}{$T^{[2]}$} & $G_{1}$ & $C_{1}$ & $G_{2}$ & $\$_{1}$ & $A_{1}$ & \cellcolor[HTML]{9B9B9B} $T_{1}$ \\
-	\multicolumn{1}{l|}{$T^{[1]}$} & $T_{1}$ & $G_{1}$ & $C_{1}$ & $G_{2}$ & $\$_{1}$ & \cellcolor[HTML]{9B9B9B} $A_{1}$ \\ 
-\end{tabular}
-\caption{Burrows-Wheelerova transformacija niza $ATGCG\$$ s rangiranim znakovima}
-\label{tablica:ibwt}	
-\end{center}
-\end{table}
-Tablicom \ref{tablica:ibwt} prikazana je BWT niza s rangiranim znakovima zajedno sa stupcima L i F. Rotacije koje počinju istim slovom, u primjeru slovom G, sortirane su po znakovima iza tog slova. Kada se te rotiacij ciklički rotiraju za jedno mjesto, slova G će se naći u zadnjem stupcu, dok druga slova biti na početku niza i određivati će leksikografski poredak tih rotacija. Upravo zato je redosljed istih slova u prvom stupcu jednak redosljedu istih slova u zadnjem stupcu. Ovo svojstvo očuvanosti poretka istih znakova u prvom i zadnjem stupcu BWT-a naziva se LF-mapiranje (last to first mapping) i omogućuje rekonstrukciju pocetnog niza iz BWT-a. Formalnije, LF-mapiranje opisuje vezu, odnosno mapiranje, zadnjeg i prvog stupca u listi leksikografski sortiranih cikličkih rotacija niza S, a temelji se na sljedećem: i-ta pojava znaka c u zadnjem stupcu (stupcu L) leksikografski sortiranih cikličkih rotacija
-odgovara i-toj pojavi znaka c u prvom stupcu (stupcu F). LF mapiranjem, iz BWT-a i uz prisutnost stupca F, moguće je izgraditi početni niz. Stupac F može se dobiti tako da se leksikografski poredaju svi znakovi u stupcu L, odnosno BWT-u.
-Formula za LF mapiranje znaka na poziciji $p$ glasi 
-\begin{equation}
-	LF(p)=C_T[L[p]]+rank_{L[p]}(L,p)-1 ,
-\end{equation}
-gdje je $C_T$ broj znakova u nizu manjih od znaka $L[p]$, $rank_{L[p]}(L,p)$ broj pojavljivanja znaka $L[p]$ u $L$ do pozicije $p$.
-\subparagraph{}
-Stupac L, odnosno BWT je konceptualno blizak sufiksnom polju, a povezuje ih jednostavna transformacija. Stoga se većina algoritama za konstrukciju BWT-a bazira na postoječim algoritmima za računanje sufiksnog polja s kompleksnošću $O(n)$ i primjeni transformacije sufiksnog polja u BWT.
-\subparagraph{}
-Jednostavna transformacija niza $T$ u niz $T'$ uzrokuje da se BWT od $T'$ mora računati od nule. U nastavku seminara biti će proučeno kako jednostavne operacije nad nizom $T$ utječu na $bwt(T)$. 
 
 \section{Zaključak}
 \dodajliteraturu{bazaLiterature}
