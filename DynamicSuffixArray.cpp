@@ -496,7 +496,7 @@ namespace dynsa {
         size_t smaller = this->countSymbolsSmallerThan(L_store);
 
         while(expected_position != previous_position) {
-            DUMP("x " << previous_position);
+            
             L_store = this->getBWTAt(previous_position);
             smaller = this->countSymbolsSmallerThan(L_store);
 
