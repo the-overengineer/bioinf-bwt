@@ -125,9 +125,9 @@ namespace dynsa {
 
 
         /**
-         * Yields the size of the text (and as such its BWT).
+         * Yields the size of the BWT (and as such text+1).
          *
-         * @return <size_t> - The size of the text
+         * @return <size_t> - The size of the BWT
          */
         size_t size();
 

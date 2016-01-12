@@ -143,7 +143,7 @@ TEST_CASE("35970 long bwt verification - test3", "[verification]"){
     REQUIRE(memcmp(a -> getBWT(), bwt, sz) == 0);
 }
 
-TEST_CASE("176616 long time monitor - test4", "[time]"){
+TEST_CASE("176616 large time monitor - test4", "[time]"){
     
     FILE* input = fopen("testdata/test4/GCA_000731455_176616.in", "r");
     ustring s = new uchar[176620];
@@ -154,4 +154,28 @@ TEST_CASE("176616 long time monitor - test4", "[time]"){
     int sz = strlen((char*)s);
     a -> setText(s, 176617);
     REQUIRE(memcmp(a -> getText(), s, sz) == 0);
+}
+
+TEST_CASE("Check size after modifications", "[size]"){
+    
+    FILE* input = fopen("testdata/test5/GCA_000731455_189561.in", "r");
+    ustring s = new uchar[189565];
+    fscanf(input," %s", s);
+    fclose(input);
+    
+    a = new dynsa::DynamicSuffixArray(fs);
+    int sz = strlen((char*)s);
+    CHECK( a -> size() == 0);
+    CHECK( a -> isEmpty() == true);
+    a -> setText(s, 148);
+    CHECK( a -> size() == 148);
+    a -> insertFactor(s+1200, 37, 231);
+    CHECK( a -> size() == 379);
+    a -> deleteAt(47, 85);
+    CHECK( a -> size() == 294);
+    a -> deleteAt(1,280);
+    CHECK( a -> size() == 14);
+    a -> deleteAt(1,12);
+    CHECK( a -> isEmpty() == false);
+    REQUIRE( a -> size() == 2);
 }
