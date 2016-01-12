@@ -37,37 +37,27 @@ namespace dynsa {
          */
         ~DynamicSuffixArray();
 
+        /**
+         * Initialization function, setting distribution corresponding to text
+         *
+         * @param <float*> factors - Expected distribution of characters in text used
+         */
         void initialize(float* factors);
 
         /**
-         * Inserts a character c into L (BWT) at the given position
-         * and updates the partial sums inside C.
+         * Set text to a specific string, calculate bwt along the way 
          *
-         * @param <uchar> c - Character to insert into text
-         * @param <size_t> position - Position at which to insert
+         * @param <ustring> s - String to set as text
+         * @param <size_t> length - The length of the string to set
          */
-        void insert(uchar c, size_t position);
-
-        /**
-         * Removes a character at given position in L and updates
-         * the partial sums.
-         *
-         * @param <size_t> position - Position at which the deleting
-         *                            happening.
-         */
-        void del(size_t position);
-
-
-        /**
-         * Moves a row from position i to position j.
-         *
-         * @param <size_t> i - Origin row
-         * @param <size_t> j - Destination row
-         */
-        void moveRow(size_t i, size_t j);
-    
         void setText(ustring s, size_t length);
 
+        /**
+         * Inserts a character into the text at given position
+         *
+         * @param <uchar> c - Character to insert into text
+         * @param <size_t> position - Position at which the insertion is happening
+         */
         void insertToText(uchar c, size_t position);
 
         /**
@@ -147,24 +137,6 @@ namespace dynsa {
          * @return <bool> - Whether SA is empty
          */
         bool isEmpty();
-
-        /**
-         * Computes LF mapping (from last column to first) of index
-         *
-         * @param <size_t> i - Position in L
-         * @return <size_t> - Position i F
-         */
-        size_t LF(size_t i);
-
-         /*
-         * Computes the FL mapping, the inverse of the LF mapping,
-         * of an index.
-         *
-         * @param <size_t> i - Position in F
-         * @return <size_t> - Position in L
-         */
-         size_t FL(size_t i);
-
 
         private:
 
@@ -286,6 +258,50 @@ namespace dynsa {
          * Might have to be corrected when other operations are added, TODO
          */
         void reorder();
+        
+        /**
+         * Inserts a character c into L (BWT) at the given position
+         * and updates the partial sums inside C.
+         *
+         * @param <uchar> c - Character to insert into text
+         * @param <size_t> position - Position at which to insert
+         */
+        void insert(uchar c, size_t position);
+        
+        /**
+         * Removes a character at given position in L and updates
+         * the partial sums.
+         *
+         * @param <size_t> position - Position at which the deleting
+         *                            happening.
+         */
+        void del(size_t position);
+
+        /**
+         * Moves a row from position i to position j.
+         *
+         * @param <size_t> i - Origin row
+         * @param <size_t> j - Destination row
+         */
+        void moveRow(size_t i, size_t j);
+
+        /**
+         * Computes LF mapping (from last column to first) of index
+         *
+         * @param <size_t> i - Position in L
+         * @return <size_t> - Position i F
+         */
+        size_t LF(size_t i);
+
+         /*
+         * Computes the FL mapping, the inverse of the LF mapping,
+         * of an index.
+         *
+         * @param <size_t> i - Position in F
+         * @return <size_t> - Position in L
+         */
+         size_t FL(size_t i);
+
     };
 };
 
