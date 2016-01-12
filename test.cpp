@@ -207,3 +207,31 @@ TEST_CASE("Short insert1","[short]") {
 	sz=strlen((char*)bwt);
 	REQUIRE((memcmp(a->getBWT(),bwt,sz)==0));
 }
+TEST_CASE("524 into 3631  long bwt insert", "[insert]"){
+
+    FILE* input = fopen("testdata/test6/GCA_000731455_3631.in", "r");
+    ustring s1 = new uchar[3631];
+    fscanf(input," %s", s1);
+    fclose(input);
+
+    FILE* insert = fopen("testdata/test6/GCA_000731455_524.in", "r");
+    ustring s2 = new uchar[524];
+    fscanf(insert," %s", s2);
+    fclose(insert);
+
+    int sz1 = strlen((char*)s1);
+    int sz2 = strlen((char*)s2);
+
+
+    FILE* bwt = fopen("testdata/test6/GCA_000731455_3631ins.out", "r");
+    ustring s3 = new uchar[sz2+sz1];
+    fscanf(insert," %s", s3);
+    fclose(insert);
+
+
+
+    a = new dynsa::DynamicSuffixArray(fs);
+    a -> setText(s1, 3632);
+    a->insertFactor(s2,500,524);
+    REQUIRE((memcmp(a -> getBWT(), s3, sz1+sz2+1) == 0));
+}
