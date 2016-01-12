@@ -53,30 +53,7 @@ int main( int argc, char* const argv[]){
     
     return result;
 }
-/*
- * BWT for the example used in documentation
- */
-TEST_CASE("Short setText1"," [short]") {
-	ustring s=(ustring) "CTCTGC";
-	ustring bwt=(ustring) "CG$TTCC";
-	a = new dynsa::DynamicSuffixArray(fs);
-	a->setText(s,7);
-	int sz=strlen((char*)s);
-	CHECK((memcmp(a->getText(),s,sz)==0));
-	sz=strlen((char*)s);
-	REQUIRE((memcmp(a->getBWT(),bwt,sz)==0));
-}
-TEST_CASE("Short insert1","[short]") {
-	ustring s=(ustring) "G";
-	a->insertFactor(s,3,1);
-	ustring bwt = (ustring) "CGG$TTCC";
 
-	s=(ustring) "CTGCTGC";
-	int sz=strlen((char*)s);
-	CHECK((memcmp(a->getText(),s,sz)==0));
-	sz=strlen((char*)bwt);
-	REQUIRE((memcmp(a->getBWT(),bwt,sz)==0));
-}
 
 
 TEST_CASE("Short setText", "[short]"){
@@ -149,6 +126,7 @@ TEST_CASE("5385 long bwt verification - test2", "[verification]"){
     a = new dynsa::DynamicSuffixArray(fs);
     a -> setText(s, 5386);
     REQUIRE((memcmp(a -> getBWT(), bwt, sz) == 0));
+
 }
 
 TEST_CASE("35970 long bwt verification - test3", "[verification]"){
@@ -205,4 +183,27 @@ TEST_CASE("Check size after modifications", "[size]"){
     CHECK( a -> isEmpty() == false);
     REQUIRE( a -> size() == 2);
 }
+/*
+ * BWT for the example used in documentation
+ */
+TEST_CASE("Short setText1"," [short]") {
+	ustring s=(ustring) "CTCTGC";
+	ustring bwt=(ustring) "CG$TTCC";
+	a = new dynsa::DynamicSuffixArray(fs);
+	a->setText(s,7);
+	int sz=strlen((char*)s);
+	CHECK((memcmp(a->getText(),s,sz)==0));
+	sz=strlen((char*)s);
+	REQUIRE((memcmp(a->getBWT(),bwt,sz)==0));
+}
+TEST_CASE("Short insert1","[short]") {
+	ustring s=(ustring) "G";
+	a->insertFactor(s,3,1);
+	ustring bwt = (ustring) "CGG$TTCC";
 
+	s=(ustring) "CTGCTGC";
+	int sz=strlen((char*)s);
+	CHECK((memcmp(a->getText(),s,sz)==0));
+	sz=strlen((char*)bwt);
+	REQUIRE((memcmp(a->getBWT(),bwt,sz)==0));
+}
