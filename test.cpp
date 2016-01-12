@@ -53,16 +53,41 @@ int main( int argc, char* const argv[]){
     
     return result;
 }
+/*
+ * BWT for the example used in documentation
+ */
+TEST_CASE("Short setText1"," [short]") {
+	ustring s=(ustring) "CTCTGC";
+	ustring bwt=(ustring) "CG$TTCC";
+	a->setText(s,7);
+	int sz=strlen((char*)s);
+	CHECK((memcmp(a->getText(),s,sz)==0));
+	sz=strlen((char*)s);
+	REQUIRE((memcmp(a->getBWT(),bwt,sz)==0));
+}
+TEST_CASE("Short insert1","[short]") {
+	ustring s=(ustring) "G";
+	a->insertFactor(s,3,1);
+	ustring bwt = (ustring) "CGG$TTCC";
+
+	s=(ustring) "CTGCTGC";
+	int sz=strlen((char*)s);
+	CHECK((memcmp(a->getText(),s,sz)==0));
+	sz=strlen((char*)bwt);
+	REQUIRE((memcmp(a->getBWT(),bwt,sz)==0));
+}
+
 
 TEST_CASE("Short setText", "[short]"){
     ustring s = (ustring) "GTGAGTGAG";
     ustring bwt = (ustring) "GGGATTA$GG";
+    a = new dynsa::DynamicSuffixArray(fs);
     a->setText(s, 10);
     int sz = strlen((char*)s);
     
-    CHECK( memcmp(a->getText(), s, sz) == 0);
+    CHECK((memcmp(a->getText(), s, sz) == 0));
     sz = strlen((char*)bwt);
-    REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
+    REQUIRE((memcmp(a->getBWT(), bwt, sz) == 0));
 }
 
 TEST_CASE("Short insert", "[short]"){
@@ -73,9 +98,9 @@ TEST_CASE("Short insert", "[short]"){
     ustring bwt = (ustring) "GGGGAATTT$AAGGG";
     int sz = strlen((char*)s);
     
-    CHECK( memcmp(a->getText(), s, sz) == 0);
+    CHECK((memcmp(a->getText(), s, sz) == 0));
     sz = strlen((char*)bwt);
-    REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
+    REQUIRE((memcmp(a->getBWT(), bwt, sz) == 0));
 }
 
 TEST_CASE("Short delete", "[short]"){
@@ -84,9 +109,9 @@ TEST_CASE("Short delete", "[short]"){
     a -> deleteAt(3,5);
     
     int sz = strlen((char*)s);
-    CHECK( memcmp(a->getText(), s, sz) == 0);
+    CHECK((memcmp(a->getText(), s, sz) == 0));
     sz = strlen((char*)bwt);
-    REQUIRE(memcmp(a->getBWT(), bwt, sz) == 0);
+    REQUIRE((memcmp(a->getBWT(), bwt, sz) == 0));
 }
 
 TEST_CASE("1031 long bwt verification - test1", "[verification]"){
@@ -104,7 +129,7 @@ TEST_CASE("1031 long bwt verification - test1", "[verification]"){
     
     a = new dynsa::DynamicSuffixArray(fs);
     a -> setText(s, 1032);
-    REQUIRE(memcmp(a -> getBWT(), bwt, sz) == 0);
+    REQUIRE((memcmp(a -> getBWT(), bwt, sz) == 0));
 }
 
 TEST_CASE("5385 long bwt verification - test2", "[verification]"){
@@ -122,7 +147,7 @@ TEST_CASE("5385 long bwt verification - test2", "[verification]"){
     
     a = new dynsa::DynamicSuffixArray(fs);
     a -> setText(s, 5386);
-    REQUIRE(memcmp(a -> getBWT(), bwt, sz) == 0);
+    REQUIRE((memcmp(a -> getBWT(), bwt, sz) == 0));
 }
 
 TEST_CASE("35970 long bwt verification - test3", "[verification]"){
@@ -140,7 +165,7 @@ TEST_CASE("35970 long bwt verification - test3", "[verification]"){
     
     a = new dynsa::DynamicSuffixArray(fs);
     a -> setText(s, 35971);
-    REQUIRE(memcmp(a -> getBWT(), bwt, sz) == 0);
+    REQUIRE((memcmp(a -> getBWT(), bwt, sz) == 0));
 }
 
 TEST_CASE("176616 long time monitor - test4", "[time]"){
@@ -153,5 +178,5 @@ TEST_CASE("176616 long time monitor - test4", "[time]"){
     a = new dynsa::DynamicSuffixArray(fs);
     int sz = strlen((char*)s);
     a -> setText(s, 176617);
-    REQUIRE(memcmp(a -> getText(), s, sz) == 0);
+    REQUIRE((memcmp(a -> getText(), s, sz) == 0));
 }
