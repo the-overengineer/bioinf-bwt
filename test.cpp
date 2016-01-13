@@ -235,3 +235,29 @@ TEST_CASE("524 into 3631  long bwt insert", "[insert]"){
     a->insertFactor(s2,500,524);
     REQUIRE((memcmp(a -> getBWT(), s3, sz1+sz2+1) == 0));
 }
+TEST_CASE("35970 delete - test7", "[delete]"){
+
+    FILE* input = fopen("testdata/test7/GCA_000731455_35970.in", "r");
+    ustring s = new uchar[35972];
+    fscanf(input," %s", s);
+    fclose(input);
+
+    FILE* deleted = fopen("testdata/test7/GCA_000731455_35970del.in", "r");
+    ustring del = new uchar[35972];
+    fscanf(deleted," %s", del);
+    fclose(deleted);
+    int sz = strlen((char*)del);
+
+    a = new dynsa::DynamicSuffixArray(fs);
+    a -> setText(s, 35971);
+    a ->deleteAt(4000,4000);
+
+    CHECK((memcmp(a -> getText(), del, 31970) == 0));
+
+    FILE* expected = fopen("testdata/test7/GCA_000731455_35970del.out", "r");
+    ustring bwt = new uchar[31971];
+    fscanf(expected," %s", bwt);
+    fclose(expected);
+
+    REQUIRE((memcmp(a -> getBWT(), bwt, 31971) == 0));
+}
