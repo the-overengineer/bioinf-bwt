@@ -495,65 +495,12 @@ Točnost je bila testirana koristeći UNIT testove. Podaci za usporedbu generira
 \label{tablica:usporedba}
 \end{table}
 
-\section{Testiranje i rezultati}
-U testiranje je uključeno testiranje točnosti, testiranje vremena izvođenja i testiranje memorijskog zauzeća. Rezultati vremenskog i memorijskog testiranja prikazani su u tablici \ref{tablica:vremena} Provedena je i usporedba vremena izvođenja za ponovnu izgradnju BWT-a i dodavanje i brisanje pomoću opisanog algoritma. Rezultati su prikazani u tablici \ref{tablica:usporedba}.
-
-Točnost je bila testirana koristeći unit testove. Podaci za usporedbu generirani su pomoću naivne implementacije BWT-a u Pythonu. Vremena izvođenja testirana su pomoću \texttt{time.h} biblioteke u kodu. Memorijsko zauzeće mjereno je alatom \texttt{cgmemtime}, dostupnom na \url{https://github.com/isovic/cgmemtime}.
-\begin{table}[h]
-
-
-\begin{tabular}{|m{7cm}|c|c| }
-	\hline
-	Opis testa i parametri & Vrijeme izvođenja [s] & Zauzeto memorije \\
-	\hline
-	građenje strukture, duljina 1031 & 0.003357 & 1MB \\
-	\hline
-	građenje strukture, duljina 5385 & 0.028451 & 1MB \\
-	\hline
-	građenje strukture, duljina 35970 & 0.176832 & 1MB \\
-	\hline
-	građenje strukture,  duljina 189561 & 1.214295 & 2MB \\
-	\hline
-	građenje strukture, duljina 2494862 & 21.097746 & 9MB \\
-	\hline
-	dodavanje od 512, u niz od 1032, na poziciji 512   & 0.001728 & 1MB \\
-	\hline
-	brisanje od 512, u nizu od 1032, na poziciji 500   & 0.001916 & 1MB \\
-	\hline
-	brisanje od 512, u nizu od 35970, na poziciji 10000   & 0.002748 & 2MB \\
-	\hline
-	dodavanje od 1413, u niz od 189561, na poziciju 10000   & 0.010186 & 2MB \\
-	\hline
-	brisanje od 42000, u nizu od 189561, na poziciji 20000   & 0.0203301 & 2MB \\
-	\hline
-	brisanje od 126183, u nizu od 700918, na poziciji 350000   & 0.738056 & 4MB \\
-	\hline
-	dodavanje od 126183, u niz od 700918, na poziciju 350000   & 0.902695 & 4MB \\
-	\hline	
-\end{tabular}
-\caption{Vremena izvođenja i zauzeće memorije}
-\label{tablica:vremena}
-\end{table}
-\begin{table}[h]
-\begin{tabular}{|m{5cm}|c|c|}
-	\hline
-	Provedene operacije & Vrijeme za izgradnju BWT-a & Vrijeme ažuriranja \\
-	\hline
-	Dodavanje 4000 znakova na poziciju 4000 u niz od 35970 znakova & 0.157335 & 0.016616 \\
-	\hline
-	Brisanje 524 znaka na poziciju 500 u nizu od 3631 znakova & 0.013593 & 0.002038 \\
-	\hline
-\end{tabular}
-\caption{Usporedba ponovne izgradnje i ažuriranja BWT-a}
-\label{tablica:usporedba}
-\end{table}
-
-
 \section{Zaključak}
 
-Problem izgradnje BWT-a nakon operacija izmjene usko je grlo u korištenju sufiksnog polja. Iako su nad tom strukturom provedene mnoge optimizacije i poboljšanja, korak konstrukcije još uvijek uvodi nepotrebno veliku vremensku i prostornu složenost. U ovoj implementaciji pokazali smo da je taj problem moguće izbjeći dinamičkim izmjenama nad postojećim sufiksnim nizom, odnosno BWT transformacijom teksta. Za operacije brisanja i dodavanja nizova znakova, nad kojima smo vršili usporedbu, postigli smo ubrzanje od jednog reda veličine.
 
-Korištenjem dinamičke strukture poboljšava se iskoristivost sufiksnog niza, veoma važne strukture u manipulaciji tekstom, pa tako i u području bioinformatike. Dodatna poboljšanja mogli bismo postići i direktnom implementacijom funkcije zamjene podniza, a možda i mikrooptimizacijama napisanog koda. Ipak, čak i prilično naivna implementacija dinamičkog sufiksnog niza koji predlažu Salson i suradnici pokazala se velikim poboljšanjem nad operacijama rekonstrukcije.
-\dodajliteraturu{bazaLiterature}
-\section{Sažetak}
+
+\section{Literatura}
+Salson et al. 2009. A fourstage algorithm for updating a Burrows–Wheeler transform,
+http://www.sciencedirect.com/science/article/pii/S0304397509004770
+
 \end{document}
