@@ -76,7 +76,6 @@ TEST_CASE("Short replace", "[short]"){
 
 TEST_CASE("Single insert", "[short]"){
     a -> insertToText((uchar)'C', 4);
-    cout << a -> getText() << endl << a -> getBWT() << endl;
     ustring s = (ustring) "GTTCTGTGAG";
     ustring bwt = (ustring) "GGTATT$TGCG";
     
