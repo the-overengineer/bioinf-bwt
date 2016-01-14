@@ -254,7 +254,7 @@ TEST_CASE("35970 delete - test7", "[delete]"){
 
     CHECK((memcmp(a -> getText(), del, 31970) == 0));
 
-    FILE* expected = fopen("testdata/test7/GCA_000731455_35970del.out", "r");
+    FILE* expected = fopen("testdata/test7/GCA_000731455_35970del", "r");
     ustring bwt = new uchar[31971];
     fscanf(expected," %s", bwt);
     fclose(expected);
