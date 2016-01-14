@@ -1,13 +1,15 @@
 \select@language {croatian}
 \contentsline {section}{\numberline {1.}Uvod}{1}{section.1}
-\contentsline {subparagraph}{}{1}{section*.1}
-\contentsline {subparagraph}{}{1}{section*.2}
 \contentsline {section}{\numberline {2.}Burrows-Wheelerova transformacija}{2}{section.2}
-\contentsline {subparagraph}{}{2}{section*.3}
-\contentsline {subparagraph}{}{2}{table.1}
-\contentsline {subparagraph}{}{2}{section*.5}
-\contentsline {subparagraph}{}{2}{section*.6}
-\contentsline {subparagraph}{}{3}{section*.7}
-\contentsline {subparagraph}{}{3}{section*.8}
-\contentsline {section}{\numberline {3.}Zaklju\IeC {\v c}ak}{4}{section.3}
-\contentsline {section}{\numberline {4.}Sa\IeC {\v z}etak}{5}{section.4}
+\contentsline {section}{\numberline {3.}Opis algoritma}{4}{section.3}
+\contentsline {subsection}{\numberline {3.1.}Cikli\IeC {\v c}ki pomaci reda $j>i$ (I)}{4}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1.}Cikli\IeC {\v c}ki pomaci reda $j>i+1$ (Ia)}{4}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2.}Cikli\IeC {\v c}ki pomaci reda $j=i+1$ (Ib)}{4}{subsubsection.3.1.2}
+\contentsline {subsection}{\numberline {3.2.}Cikli\IeC {\v c}ki pomaci reda $j\leq i$ (II)}{5}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1.}Cikli\IeC {\v c}ki pomaci reda $j=i$ (IIa)}{5}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2.}Cikli\IeC {\v c}ki pomaci reda $j<i$ (IIb)}{5}{subsubsection.3.2.2}
+\contentsline {subsection}{\numberline {3.3.}Cikli\IeC {\v c}ki pomaci reda $j\leq i$ (II)}{7}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1.}Cikli\IeC {\v c}ki pomaci reda $j=i$ (IIa)}{7}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2.}Cikli\IeC {\v c}ki pomaci reda $j<i$ (IIb)}{7}{subsubsection.3.3.2}
+\contentsline {section}{\numberline {4.}Zaklju\IeC {\v c}ak}{9}{section.4}
+\contentsline {section}{\numberline {5.}Sa\IeC {\v z}etak}{10}{section.5}

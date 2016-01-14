@@ -200,7 +200,6 @@ namespace dynsa {
 
         /**
          * Returns the number of symbols smaller than a given symbol.
-         * //TODO elaborate
          *
          * @param <uchar> c - Character for which we want a smaller count
          * @return <size_t> - Number of symbols smaller than a given symbol
@@ -255,7 +254,7 @@ namespace dynsa {
          * In this case <j> is the index of T^[i-1], while insertion_point
          * is the point at which we inserted our new row.
          *
-         * Might have to be corrected when other operations are added, TODO
+         * Might have to be corrected when other operations are added
          */
         void reorder();
         

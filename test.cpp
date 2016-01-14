@@ -7,36 +7,6 @@
 
 using namespace std;
 
-/*int main() {
-    dynsa::ustring s = new uchar[5];
-    s[0] = (uchar) 'G';
-    s[1] = (uchar) 'T';
-    s[2] = (uchar) 'G';
-    s[3] = (uchar) 'A';
-    s[4] = (uchar) 0;
-
-    float* fs = DynRankS::createCharDistribution(s, 5, 1);
-    dynsa::DynamicSuffixArray * a = new dynsa::DynamicSuffixArray(fs);
-    a->setText(s, 5);
-
-    cout << a->getText() << endl;
-    cout << a->getBWT() << endl;
-
-    a->deleteAt(1, 2);
-
-    cout << a->getText() << endl;
-    cout << a->getBWT() << endl;
-
-    a->deleteAt(1, 1);
-
-    cout << a->getText() << endl;
-    cout << a->getBWT() << endl;
-
-    return 0;
-}
-*/
-
-
 //Common variables for some tests
 dynsa::DynamicSuffixArray *a;
 ustring dist_string;
@@ -85,6 +55,29 @@ TEST_CASE("Short delete", "[short]"){
     ustring s = (ustring) "GTGAGTGAG";
     ustring bwt = (ustring) "GGGATTA$GG";
     a -> deleteAt(3,5);
+    
+    int sz = strlen((char*)s);
+    CHECK((memcmp(a->getText(), s, sz) == 0));
+    sz = strlen((char*)bwt);
+    REQUIRE((memcmp(a->getBWT(), bwt, sz) == 0));
+}
+
+TEST_CASE("Short replace", "[short]"){
+    a -> replace((ustring) "TT", 3, 2);
+    
+    ustring s = (ustring) "GTTTGTGAG";
+    ustring bwt = (ustring) "GGATT$GTTG";
+    
+    int sz = strlen((char*)s);
+    CHECK((memcmp(a->getText(), s, sz) == 0));
+    sz = strlen((char*)bwt);
+    REQUIRE((memcmp(a->getBWT(), bwt, sz) == 0));
+}
+
+TEST_CASE("Single insert", "[short]"){
+    a -> insertToText((uchar)'C', 4);
+    ustring s = (ustring) "GTTCTGTGAG";
+    ustring bwt = (ustring) "GGTATT$TGCG";
     
     int sz = strlen((char*)s);
     CHECK((memcmp(a->getText(), s, sz) == 0));
@@ -254,7 +247,7 @@ TEST_CASE("35970 delete - test7", "[delete]"){
 
     CHECK((memcmp(a -> getText(), del, 31970) == 0));
 
-    FILE* expected = fopen("testdata/test7/GCA_000731455_35970del.out", "r");
+    FILE* expected = fopen("testdata/test7/GCA_000731455_35970del", "r");
     ustring bwt = new uchar[31971];
     fscanf(expected," %s", bwt);
     fclose(expected);

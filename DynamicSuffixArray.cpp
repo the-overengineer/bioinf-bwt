@@ -87,69 +87,10 @@ namespace dynsa {
     }
 
     void DynamicSuffixArray::insertToText(uchar c, size_t position) {
-        //Cannot insert after the end of text
-        position = MIN(position, this->size());
-
-        if(this->isEmpty()) {
-            this->insert(c, 1);
-            sample->insertBWT(1, 1);
-            sample->insertBWT(1);
-            return;
-        }
-
-        //Step Ib modifies T^[position]
-        //a) Find the position via sampling
-        k = this->getISA(position);
-       
-        //Stores the position of T^[position-1] for reordering later
-        uchar old_sym;
-
-        //b) Perform the replacement, deleting the old char if there is one
-        if(! this->isEmpty()) {
-            old_sym = this->getBWTAt(k);
-            previous_position = countSymbolsSmallerThan(old_sym) + rank(old_sym, k);
-            this->L->deleteSymbol(k);
-        }
-
-        //Try a fix?! FIXME
-        //if(old_sym > c) {
-        //    previous_position--;
-        //}
-        
-        insert(c, k); //Insert the replacement symbol
-      
-        new_sym = c;
-        this->operation = inserting;
-
-        //if(old_sym > new_sym) {
-        //    previous_position--;
-        //}
-
-        //Step IIa inserts a row @ LF(k)
-        size_t insertion_point = this->countSymbolsSmallerThan(c) + this->rank(c, k);
-       
-        //if(pos_first_modif < k && c == old_sym) {
-        //    insertion_point++;
-        //}
-
-        insert(old_sym, insertion_point); //The Gonzales-Navarro structure should handle this
-                                    //According to the paper, at least
-        
-        //if(insertion_point <= previous_position) {
-        //
-        //}
-
-        //Update our sampler. I honestly still have no idea what the sampler does
-        sample->insertBWT(position, insertion_point);
-
-        //
-
-        //Finally, step IIb, REORDER. We give it 
-        //The parameters are j and index(T'^[i]), from which j' is computed
-        //reorder(previous_position, insertion_point);
-
-        //Perform the final update of our sampler
-        sample->insertBWT(position);
+        ustring a = new uchar[2];
+        a[0] = c;
+        a[1] = 0;
+        this -> insertFactor(a, position, 1);
     }
 
     void DynamicSuffixArray::insertFactor(ustring s, size_t position, size_t length) {
@@ -279,7 +220,8 @@ namespace dynsa {
     }
 
     void DynamicSuffixArray::replace(ustring s, size_t position, size_t length) {
-        //TODO replace
+        this -> deleteAt(position, length);
+        this -> insertFactor(s, position, length);
     }
 
     void DynamicSuffixArray::setText(ustring s, size_t size) {
@@ -321,10 +263,7 @@ namespace dynsa {
     ustring DynamicSuffixArray::getText() {
         size_t N = this->size();
             ustring text = new uchar[N];
-        
-        //TODO what about fetching the text during substitution?
-        // Should not matter, but check
-        
+            
         for(size_t i = N - 1, j = 1; i > 0; i--) {
             text[i - 1] = this->getBWTAt(j);
             if(operation == inserting && j == insertion_point) {
@@ -408,7 +347,7 @@ namespace dynsa {
         }
 
         uchar c = this->getBWTAt(i);
-        //TODO special cases while modifying
+        
         size_t smaller = this->countSymbolsSmallerThan(c);
         size_t r = this->rank(c, i);
 
