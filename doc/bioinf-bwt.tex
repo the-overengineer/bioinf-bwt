@@ -404,6 +404,96 @@ Na poziciji $T'^{[i-2]}$ je prvi $\$$ u $L$ i na poziciji $T^{[i-3]}$ je prvi $\
 \end{tikzpicture}
 \end{figure}
 \normalsize
+\subsection{Umetanje više od jednog znaka}
+Umetanje prikazano u prethodnom poglavlju može se generalizirati za umetanje niza $S$ duljine $m$ na poziciju $i$ u $T$. Za $T'=T[0..i-1]S[0..m-1]T[i..n]$ gdje je $m>1$ koraci iz prethodnog poglavlja mogu se proširiti:
+\begin{itemize}
+	\item[(Ia)] Ciklički pomaci $T'^{[j]}$ gdje je $j>i+m$: ostaju nepromijenjeni.
+	\item[(Ib)] Ciklički pomak $T'^{[i+m]}$: modifikacija $L=S_{m-1}$ umjesto $T_{i-1}$.
+	\item[(IIa)] Ciklički pomaci $T'^{[j]}$ gdje je $i+1<j<i+m-1$:
+	\begin{itemize}
+		\item[] umetanje $F=S_{j-1}$ i $L=S_{j-i-1}$.
+		\item[$T'^{[i]}$:] umetanje  $F=S_0$ i $L=T_{[i-1]}$
+	\end{itemize}
+	\item Ciklički pomaci $T'^{[j]}$ gdje je $j<i$Č isti algoritam kao i kod umetanja jednog znaka.
+\end{itemize}
+Kod umetanja više znakova pojavljuje se problem. U koraku (Ib) se briše $T_{i-1}$ i nakon svih umetanja potreban je na kraju korak (IIa). U koraku (IIa), sve vrijednosti koje koriste $rank_{T_{i-1}}$ izračunate prije zadnjeg umetanja mogu biti krive. Jednostavno rješenje ovog problema je da se kod računanja vrijednosti na koje utječe $rank_{T_{i-1}}$ izračunatoj vrijednosti doda $1$.
+\subsection{Brisanje više od jednog znaka}
+Briše se $m$ uzastopnih znakova u $T$, počevši od pozicije $i$. Dobiveni niz je $T'=T[0..i-1]T[i+m..n]$. Koraci se proširuju na sljedeći način:
+\begin{itemize}
+	\item[(Ia)] Ciklički pomaci $T'^{[j]}$ gdje je $j>i+m$: ostaju nepromijenjeni.
+	\item[(Ib)] Ciklički pomak $T'^{[i+m]}$: modifikacija $L=T_{i-1}$ umjesto $T_{i+m-1}$.
+	\item[(IIa)] Ciklički pomaci $T^{[j]}$ gdje je $i<j<i+m-1$:
+	\begin{itemize}
+		\item[] brisanje retka
+		\item[] tijekom brisanja cikličkog pomaka, $T_{i-1}$ se pojavljuje dva puta u $L$. Potrebno je oduzeti $1$ od vrijednosti $rank_{T_{i-1}}$
+	\end{itemize}
+	\item Ciklički pomaci $T'^{[j]}$ gdje je $j<i$Č isti algoritam kao i kod umetanja jednog znaka.
+\end{itemize}
+\subsection{Zamjena više od jednog znaka}
+Mijenja se $T[i..i+m-1]$ za $S[0..m-1]$. Dobiveni niz je $T'=T[0..i-1]S[0..m-1]T[i+m..n]$. Koraci se proširuju na sljedeći način:
+\begin{itemize}
+	\item[(Ia)] Ciklički pomaci $T'^{[j]}$ gdje je $j>i+m$: ostaju nepromijenjeni.
+	\item[(Ib)] Ciklički pomak $T'^{[i+m]}$: modifikacija $L=S_{m-1}$ umjesto $T_{i+m-1}$.
+	\item[(IIa)] Ciklički pomaci $T'^{[j]}$ gdje je $i+1<j<i+m-1$:
+	\begin{itemize}
+		\item[] zamjena $F=S_{j-i}$ i $L=S_{j-i-1}$
+		\item[] pomaknuti redak na odgovarajuću poziciju.
+		\item[$T'^{[i]}$] modifikacija $F=S_0$
+	\end{itemize}
+	\item Ciklički pomaci $T'^{[j]}$ gdje je $j<i$Č isti algoritam kao i kod umetanja jednog znaka.
+\end{itemize}
+\section{Testiranje i rezultati}
+U testiranje je uključeno testiranje točnosti, testiranje vremena izvođenja i testiranje memorijskog zauzeća. Rezultati vremenskog i memorijskog testiranja prikazani su u tablici \ref{tablica:vremena}. Provedena je i usporedba vremena izvođenja za ponovnu izgradnju BWT-a i dodavanje i brisanje pomoću opisanog algoritma. Rezultati su prikazani u tablici \ref{tablica:usporedba}.
+\subparagraph{}
+Točnost je bila testirana koristeći UNIT testove. Podaci za usporedbu generirani su pomoću naivne implementacije BWT-a u Pythonu. Vremena izvođenja testirana su pomoću time.h biblioteke u kodu. Memorijsko zauzeće mjereno je alatom cgmemtime, dostupnom na https://github.com/isovic/cgmemtime.
+\begin{table}[h]
+
+
+\begin{tabular}{|m{7cm}|c|c| }
+	\hline
+	Opis testa i parametri & Vrijeme izvođenja [s] & Zauzeto memorije \\
+	\hline
+	građenje strukture, duljina 1031 & 0.003357 & 1MB \\
+	\hline
+	građenje strukture, duljina 5385 & 0.028451 & 1MB \\
+	\hline
+	građenje strukture, duljina 35970 & 0.176832 & 1MB \\
+	\hline
+	građenje strukture,  duljina 189561 & 1.214295 & 2MB \\
+	\hline
+	građenje strukture, duljina 2494862 & 21.097746 & 9MB \\
+	\hline
+	dodavanje od 512, u niz od 1032, na poziciji 512   & 0.001728 & 1MB \\
+	\hline
+	brisanje od 512, u nizu od 1032, na poziciji 500   & 0.001916 & 1MB \\
+	\hline
+	brisanje od 512, u nizu od 35970, na poziciji 10000   & 0.002748 & 2MB \\
+	\hline
+	dodavanje od 1413, u niz od 189561, na poziciju 10000   & 0.010186 & 2MB \\
+	\hline
+	brisanje od 42000, u nizu od 189561, na poziciji 20000   & 0.0203301 & 2MB \\
+	\hline
+	brisanje od 126183, u nizu od 700918, na poziciji 350000   & 0.738056 & 4MB \\
+	\hline
+	dodavanje od 126183, u niz od 700918, na poziciju 350000   & 0.902695 & 4MB \\
+	\hline	
+\end{tabular}
+\caption{Vremena izvođenja i zauzeće memorije}
+\label{tablica:vremena}
+\end{table}
+\begin{table}[h]
+\begin{tabular}{|m{5cm}|c|c|}
+	\hline
+	Provedene operacije & Vrijeme za izgradnju BWT-a & Vrijeme ažuriranja \\
+	\hline
+	Dodavanje 4000 znakova na poziciju 4000 u niz od 35970 znakova & 0.157335 & 0.016616 \\
+	\hline
+	Brisanje 524 znaka na poziciju 500 u nizu od 3631 znakova & 0.013593 & 0.002038 \\
+	\hline
+\end{tabular}
+\caption{Usporedba ponovne izgradnje i ažuriranja BWT-a}
+\label{tablica:usporedba}
+\end{table}
 
 \section{Testiranje i rezultati}
 U testiranje je uključeno testiranje točnosti, testiranje vremena izvođenja i testiranje memorijskog zauzeća. Rezultati vremenskog i memorijskog testiranja prikazani su u tablici \ref{tablica:vremena} Provedena je i usporedba vremena izvođenja za ponovnu izgradnju BWT-a i dodavanje i brisanje pomoću opisanog algoritma. Rezultati su prikazani u tablici \ref{tablica:usporedba}.

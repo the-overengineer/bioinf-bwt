@@ -42,4 +42,20 @@ To print all possible options use:
 
 ## Test results
 
-* TODO fill in with results and comparisons *
+Action | Length | Time[s] | Memory[MB]
+-------|------|-------|-------
+Calculate BWT | 1031 | 0.003357 | 1
+Calculate BWT | 5385 | 0.028451 | 1
+Calculate BWT | 35970 | 0.176832 | 1
+Calculate BWT | 189561 | 1.214295 | 2
+Calculate BWT | 2494862 | 21.097746 | 9
+Adding string | 512 into 1032 | 0.001728 | 1
+Deleting string | 512 from 1032 | 0.001916 | 1
+Deleting string | 512 from 35970 | 0.002748 | 2
+Adding string | 1413 into 189561 | 0.010186 | 2
+Deleting string | 42000 from 189561 | 0.0203301 | 2
+Deleting string | 126183 from 700918 | 0.738056 | 4
+Adding string | 126183 into 700918 | 0.902695 | 4
+
+
+
