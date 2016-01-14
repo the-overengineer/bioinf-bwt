@@ -11,5 +11,6 @@
 \contentsline {subsection}{\numberline {3.3.}Cikli\IeC {\v c}ki pomaci reda $j\leq i$ (II)}{7}{subsection.3.3}
 \contentsline {subsubsection}{\numberline {3.3.1.}Cikli\IeC {\v c}ki pomaci reda $j=i$ (IIa)}{7}{subsubsection.3.3.1}
 \contentsline {subsubsection}{\numberline {3.3.2.}Cikli\IeC {\v c}ki pomaci reda $j<i$ (IIb)}{7}{subsubsection.3.3.2}
-\contentsline {section}{\numberline {4.}Zaklju\IeC {\v c}ak}{9}{section.4}
-\contentsline {section}{\numberline {5.}Sa\IeC {\v z}etak}{10}{section.5}
+\contentsline {section}{\numberline {4.}Testiranje i rezultati}{9}{section.4}
+\contentsline {section}{\numberline {5.}Zaklju\IeC {\v c}ak}{10}{section.5}
+\contentsline {section}{\numberline {6.}Sa\IeC {\v z}etak}{11}{section.6}
