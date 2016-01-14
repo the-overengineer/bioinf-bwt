@@ -497,7 +497,9 @@ Točnost je bila testirana koristeći UNIT testove. Podaci za usporedbu generira
 
 \section{Zaključak}
 
+Problem izgradnje BWT-a nakon operacija izmjene usko je grlo u korištenju sufiksnog polja. Iako su nad tom strukturom provedene mnoge optimizacije i poboljšanja, korak konstrukcije još uvijek uvodi nepotrebno veliku vremensku i prostornu složenost. U ovoj implementaciji pokazali smo da je taj problem moguće izbjeći dinamičkim izmjenama nad postojećim sufiksnim nizom, odnosno BWT transformacijom teksta. Za operacije brisanja i dodavanja nizova znakova, nad kojima smo vršili usporedbu, postigli smo ubrzanje od jednog reda veličine.
 
+Korištenjem dinamičke strukture poboljšava se iskoristivost sufiksnog niza, veoma važne strukture u manipulaciji tekstom, pa tako i u području bioinformatike. Dodatna poboljšanja mogli bismo postići i direktnom implementacijom funkcije zamjene podniza, a možda i mikrooptimizacijama napisanog koda. Ipak, čak i prilično naivna implementacija dinamičkog sufiksnog niza koji predlažu Salson i suradnici pokazala se velikim poboljšanjem nad operacijama rekonstrukcije.
 
 \section{Literatura}
 Salson et al. 2009. A fourstage algorithm for updating a Burrows–Wheeler transform,
