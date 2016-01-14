@@ -4,11 +4,25 @@ This repository contains an implementation of the dynamic suffix array described
 
 ## Dependencies
 
-* TODO - Describe the dynamic structure we are using *
+We are using [Gerlach's implentation](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.132.468&rep=rep1&type=pdf) of [Mäkinen and Navarro’s dynamic structures](http://dl.acm.org/citation.cfm?id=1367072). This allows us to perform our *rank<sub>c</sub>*, *insert* and *delete* operations in O(log n log &sigma;), where *n* is the length of the text and *&sigma;* is the size of the alphabet &Sigma;. These structures also include a sampler, which we are using for (more) efficient computation of ISA values at a given index.
 
 ## Relevant files
 
-* TODO state which file contain our actual code *
+The majority of our implementation is contained within the header file *DynamicSuffixArray.h* and its implementation *DynamicSuffixArray.cpp*. The class, variable and method comments are all contained within the header file. The comments inside the C++ file only explain the implementation details or reference the paper.
+
+The rest of the C++ files are unchanged or mostly unchanged, having required at most a few definitions to satisfy our compilers.
+
+The building process is managed by the *Makefile*. It manages the building process, as well as the compiler options and flags. The building can simply be started by running
+
+```bash
+make
+```
+
+or
+
+```bash
+make all
+```
 
 ## Running the examples
 
