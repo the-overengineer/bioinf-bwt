@@ -23,11 +23,11 @@ Burrows-Wheelerova transformacija (BWT) je transformacija teksta, vrlo prikladna
 Konceptualno, tekst nad kojim je izvršena BWT je sličan sufiksnom polju. Zbog te sličnosti BWT se koristi i kao indeksna struktura. BWT tseksta $T$ ($bwt(t)$) se često dobiva iz modifikacije sufiksnog polja složenost čije konstrukcije je $O(n)$. Pohranjivanje sufiksnog polja u memoriji još je uvijek glavni problem jer zahtjeva $n\log{}n$ bitova, dok pohrana BWT-a u memoriju zahtjeva tek $(n\log{}\sigma)$ bita, gdje je $\sigma$ broj simbola u korištenoj abecedi $\Sigma$.
 
 
-U ovom seminaru razmatrat će se uobičajne operacije nad tekstom - umetanje znakova, brisanje znakova ili zamjena znakova, koje tekst $T$ transformiraju u novi tekst $T'$. Biti će proučavan utjecaj tih operacija na $bwt(T)$ i biti će opisane operacije pretvorbe $bwt(T)$ u $bwt(T')$, te njihova implementacija.
+U ovom seminaru razmatrat će se uobičajene operacije nad tekstom - umetanje znakova, brisanje znakova ili zamjena znakova, koje tekst $T$ transformiraju u novi tekst $T'$. Biti će proučavan utjecaj tih operacija na $bwt(T)$ i biti će opisane operacije pretvorbe $bwt(T)$ u $bwt(T')$, te njihova implementacija.
 
 \section{Burrows-Wheelerova transformacija}
 
-Neka je tekst $T=T[0..n]$ riječ duljine $n+1$ s abecedom $\Sigma$, pri čemu je abeceda $\Sigma$ konačne velicine $\sigma$. Zadnji znak u riječi $T$ je jedinstveni znak $\$$ (\textit{sentinel}) koji ima vrijednost manju od svih ostalih znakova u abecedi, odnosno pri operaciji usporedbe uvijek se smatra manjim.  Podniz koji počinje na poziciji $i$ i završava na poziciji $j$ označen je s $T[i..j]$, znak na poziciji $i$ je označen s $T[i]$, te je ciklički pomak reda $i$,  $T[i..n]T[0..i-1]$ označen s $T^{[i]}$.
+Neka je tekst $T=T[0..n]$ riječ duljine $n+1$ s abecedom $\Sigma$, pri čemu je abeceda $\Sigma$ konačne veli;ine $\sigma$. Zadnji znak u riječi $T$ je jedinstveni znak $\$$ (\textit{sentinel}) koji ima vrijednost manju od svih ostalih znakova u abecedi, odnosno pri operaciji usporedbe uvijek se smatra manjim.  Podniz koji počinje na poziciji $i$ i završava na poziciji $j$ označen je s $T[i..j]$, znak na poziciji $i$ je označen s $T[i]$, te je ciklički pomak reda $i$,  $T[i..n]T[0..i-1]$ označen s $T^{[i]}$.
 
 Burrows-Wheelerova transformacija od $T$, označena s $bwt(T)$, je tekst duljine n+1 koji odgovara zadnjem stupcu, ($L$), matrice čiji su reci leksikografski sortirani ciklički pomaci $T^{[i]}$. Prvi stupac matrice, ($F$), je sortiran, tako da se jednostavno može izračunati iz stupca $L$. Redovi sortiranih cikličkih pomaka, $\pi$ jednaki su sufiksnom polju od $T$. Iz toga slijedi kako su sufiksno polje $SA[i]$ i $L$ povezani jednostavnom formulom $L[i]= T[(SA[i]-1) \mod |T|]$.
 
@@ -92,7 +92,7 @@ Burrows-Wheelerova transformacija odgovara zadnjem stupcu sortirane matrice cikl
 \end{center}
 \end{table}
 
-Tablicom \ref{tablica:ibwt} prikazani su rangirani ciklični pomaci s rangiranim znakovima zajedno sa stupcima $L$ i $F$. Rotacije koje počinju istim slovom, u primjeru slovom G, sortirane su po znakovima koji slijede. Kada se te rotacije ciklički rotiraju za jedno mjesto, slova G će se naći u zadnjem stupcu, dok druga slova biti na početku niza i određivati će leksikografski poredak tih rotacija. Upravo zato je redosljed istih slova u prvom stupcu jednak redosljedu istih slova u zadnjem stupcu. Ovo svojstvo očuvanosti poretka istih znakova u prvom i zadnjem stupcu BWT-a naziva se LF-mapiranje (last to first mapping) i omogućuje rekonstrukciju početnog niza iz BWT-a. Formalnije, LF-mapiranje opisuje vezu, odnosno mapiranje, zadnjeg i prvog stupca u listi leksikografski sortiranih cikličkih rotacija niza S, a temelji se na sljedećem: $i$-ta pojava znaka $c$ u zadnjem stupcu (stupcu $L$) leksikografski sortiranih cikličkih rotacija
+Tablicom \ref{tablica:ibwt} prikazani su rangirani ciklični pomaci s rangiranim znakovima zajedno sa stupcima $L$ i $F$. Rotacije koje počinju istim slovom, u primjeru slovom G, sortirane su po znakovima koji slijede. Kada se te rotacije ciklički rotiraju za jedno mjesto, slova G će se naći u zadnjem stupcu, dok druga slova biti na početku niza i određivati će leksikografski poredak tih rotacija. Upravo zato je redoslijed istih slova u prvom stupcu jednak redoslijedu istih slova u zadnjem stupcu. Ovo svojstvo očuvanosti poretka istih znakova u prvom i zadnjem stupcu BWT-a naziva se LF-mapiranje (last to first mapping) i omogućuje rekonstrukciju početnog niza iz BWT-a. Formalnije, LF-mapiranje opisuje vezu, odnosno mapiranje, zadnjeg i prvog stupca u listi leksikografski sortiranih cikličkih rotacija niza S, a temelji se na sljedećem: $i$-ta pojava znaka $c$ u zadnjem stupcu (stupcu $L$) leksikografski sortiranih cikličkih rotacija
 odgovara $i$-toj pojavi znaka $c$ u prvom stupcu (stupcu $F$). LF mapiranjem, iz BWT-a i uz prisutnost stupca $L$, moguće je izgraditi početni niz. Stupac F može se dobiti tako da se leksikografski poredaju svi znakovi u stupcu $L$, odnosno BWT-u.
 
 Formula za LF mapiranje znaka na poziciji $p$ glasi:
@@ -102,12 +102,12 @@ Formula za LF mapiranje znaka na poziciji $p$ glasi:
 
 gdje je $C_T$ broj znakova u nizu manjih od znaka $L[p]$, $rank_{L[p]}(L,p)$ broj pojavljivanja znaka $L[p]$ u $L$ do pozicije $p$.
 
-Stupac $L$, odnosno BWT je konceptualno blizak sufiksnom polju, a povezuje ih jednostavna transformacija. Stoga se većina algoritama za konstrukciju BWT-a bazira na postoječim algoritmima za računanje sufiksnog polja s kompleksnošću $O(n)$ i primjeni transformacije sufiksnog polja u BWT.
+Stupac $L$, odnosno BWT je konceptualno blizak sufiksnom polju, a povezuje ih jednostavna transformacija. Stoga se većina algoritama za konstrukciju BWT-a bazira na postojećim algoritmima za računanje sufiksnog polja s kompleksnošću $O(n)$ i primjeni transformacije sufiksnog polja u BWT.
 
 Jednostavna transformacija niza $T$ u niz $T'$ uzrokuje da se BWT od $T'$ mora računati od nule. U nastavku seminara biti će proučeno kako jednostavne operacije nad nizom $T$ utječu na $bwt(T)$. 
 
 \section{Opis algoritma}
-Opis će biti temeljen na slučaju kada se u niz umeće samo jedan znak. Na temelju toga biti će predstavljen algoritam u četiri koraka za ažiriranje BWT-a. Kako bi se mogao ažurirati BWT, potrebno je i ažurirati parcijalne sume (gore objasniti parcijalne sume znakova). Zatim će se taj pristup proširiti na više znakova i na zamjenu i brisanje znakova.
+Opis će biti temeljen na slučaju kada se u niz umeće samo jedan znak. Na temelju toga biti će predstavljen algoritam u četiri koraka za ažuriranje BWT-a. Kako bi se mogao ažurirati BWT, potrebno je i ažurirati parcijalne sume (gore objasniti parcijalne sume znakova). Zatim će se taj pristup proširiti na više znakova i na zamjenu i brisanje znakova.
 
 BWT je usko povezan s leksičkim sortiranjem svih cikličkih pomaka niza $T'$. Pretpostavka je da se u niz $T$ umeće slovo $c$ na poziciju $i$. Prema tome, postoje 4 slučaja koji su opisani slikom \ref{tablica:pozicije}. 
 
@@ -197,7 +197,7 @@ $$
 \subsection{Ciklički pomaci reda $j\leq i$ (II)}
 
 \subsubsection{Ciklički pomaci reda $j=i$ (IIa)}
-Nakon razmatranja cikličkog pomaka $T'^{[i+1]}$ koji završava s dodanim znakom $c$, razmatra se potpuno novi ciklički pomak koji počnje s $c$, $T'^{[i]}=cT^{[i]}=cT[i..n-1]\$T[0..i-1]$, kao što je prikazani slikom \ref{tablica:pozicije}. Budući da je $T'^{[i+1]}$ na prethodno izračunatoj poziciji k, $T'^[i]$ mora biti umetnut na poziciju $LF(k)$.
+Nakon razmatranja cikličkog pomaka $T'^{[i+1]}$ koji završava s dodanim znakom $c$, razmatra se potpuno novi ciklički pomak koji počinje s $c$, $T'^{[i]}=cT^{[i]}=cT[i..n-1]\$T[0..i-1]$, kao što je prikazani slikom \ref{tablica:pozicije}. Budući da je $T'^{[i+1]}$ na prethodno izračunatoj poziciji k, $T'^[i]$ mora biti umetnut na poziciju $LF(k)$.
 
 \begin{minipage}{0.5\textwidth}
 \footnotesize
@@ -210,8 +210,8 @@ $$
 $$
 \begin{itemize}
   \item[] (IIa): $T'^{[i]}$ je umetnut na poziciju $LF(k)$
-  \item[] Za novoumetnuti pomak vrijedi $F=c=\boldsymbol{G}$ i $L=T_{i-1}=\boldsymbol{T}$.
-  \item[] $T'^{[i-1]}$ zavrsava s G koji je drugi G u $L$.
+  \item[] Za novo umetnuti pomak vrijedi $F=c=\boldsymbol{G}$ i $L=T_{i-1}=\boldsymbol{T}$.
+  \item[] $T'^{[i-1]}$ završava s G koji je drugi G u $L$.
   \item[] $T'^{[i]}$ počinje s G koji mora biti drugi G u $F$.
 \end{itemize}
 
@@ -238,7 +238,7 @@ $$
 \end{minipage}
 
 \subsubsection{Ciklički pomaci reda $j<i$ (IIb)}
-U prethodnim koracima, vrijednost u jednom elementu stupca $L$ je bila izmjenjena (Ib) i jedan element je dodan (IIa). No u slučaju $j<i$, ciklički pomaci $T'^[j]$ mogu imati drugačiji leksikografski poredak od $T^{[j]}$, zbog čega neki reci moraju biti pomaknuti.
+U prethodnim koracima, vrijednost u jednom elementu stupca $L$ je bila izmijenjena (Ib) i jedan element je dodan (IIa). No u slučaju $j<i$, ciklički pomaci $T'^[j]$ mogu imati drugačiji leksikografski poredak od $T^{[j]}$, zbog čega neki reci moraju biti pomaknuti.
 
 Kako bi se ustanovilo koji reci moraju biti pomaknuti, uspoređuju se pozicije $T^{[j]}$ s pozicijama $T'^{[j]}$, od $j=i-1$ pa do $0$, dok pozicije nisu jednake. Pozicija $T^{[j]}$ dobiva se pomoću LF mapiranja iz pozicije $T^{[j+1]}$. Isto tako pozicija pozicija $T'^{[j]}$ dobiva se pomoću LF mapiranja iz pozicije $T'^{[j+1]}$. Kada se te dvije pozicije razlikuju, redak koji odgovara $T^{[j]}$ miče se na izračunatu poziciju $T'^{[j]}$. Pokazuje se da su nakon što su te dvije pozicije jednake reci ispravno poredani.
 U nastavku je prikazan pseudokod za korak (IIb). Funkcija indeks vraća poziciju cikličkog pomaka.
@@ -254,7 +254,7 @@ U nastavku je prikazan pseudokod za korak (IIb). Funkcija indeks vraća poziciju
 	\item \hspace{.1\textwidth} $j' \longleftarrow LF(j') $
 \end{enumerate}
 \normalsize
-Za primjer koristen za demonstraciju prethodnih koraka, $
+Za primjer korišten za demonstraciju prethodnih koraka, $
 	T=\overset{0}{C}	\overset{1}{T} \overset{2}{C} \overset{3}{T}	\overset{4}{G}
 	\overset{5}{C}	\overset{6}{\$} \rightarrow		
 	T'=\overset{0}{C}	\overset{1}{T}	\overset{2}{\boldsymbol{G}}  \overset{3}{C} \overset{4}{T}	\overset{5}{G}
@@ -301,7 +301,7 @@ Na poziciji $T'^{[i-2]}$ je prvi $\$$ u $L$ i na poziciji $T^{[i-3]}$ je prvi $\
 
 \subsection{Ciklički pomaci reda $j\leq i$ (II)}
 \subsubsection{Ciklički pomaci reda $j=i$ (IIa)}
-Nakon razmatranja cikličkog pomaka $T'^{[i+1]}$ koji završava s dodanim znakom $c$, razmatra se potpuno novi ciklički pomak koji počnje s $c$, $T'^{[i]}=cT^{[i]}=cT[i..n-1]\$T[0..i-1]$, kao što je prikazani slikom \ref{tablica:pozicije}. Budući da je $T'^{[i+1]}$ na prethodno izračunatoj poziciji k, $T'^[i]$ mora biti umetnut na poziciju $LF(k)$. [ovdje nesto za koristenu strukturu i parcijalne sume]
+Nakon razmatranja cikličkog pomaka $T'^{[i+1]}$ koji završava s dodanim znakom $c$, razmatra se potpuno novi ciklički pomak koji počinje s $c$, $T'^{[i]}=cT^{[i]}=cT[i..n-1]\$T[0..i-1]$, kao što je prikazani slikom \ref{tablica:pozicije}. Budući da je $T'^{[i+1]}$ na prethodno izračunatoj poziciji k, $T'^[i]$ mora biti umetnut na poziciju $LF(k)$. [ovdje nešto za korištenu strukturu i parcijalne sume]
 
 \begin{minipage}{0.5\textwidth}
 \footnotesize
@@ -314,8 +314,8 @@ $$
 $$
 \begin{itemize}
   \item[] (IIa): $T'^{[i]}$ je umetnut na poziciju $LF(k)$
-  \item[] Za novoumetnuti pomak vrijedi $F=c=\boldsymbol{G}$ i $L=T_{i-1}=\boldsymbol{T}$.
-  \item[] $T'^{[i-1]}$ zavrsava s G koji je drugi G u $L$.
+  \item[] Za novo umetnuti pomak vrijedi $F=c=\boldsymbol{G}$ i $L=T_{i-1}=\boldsymbol{T}$.
+  \item[] $T'^{[i-1]}$ završava s G koji je drugi G u $L$.
   \item[] $T'^{[i]}$ počinje s G koji mora biti drugi G u $F$.
 \end{itemize}
 
@@ -345,7 +345,7 @@ $$
 
 
 \subsubsection{Ciklički pomaci reda $j<i$ (IIb)}
-U prethodnim koracima, vrijednost u jednom elementu stupca $L$ je bila izmjenjena (Ib) i jedan element je dodan (IIa). No u slučaju $j<i$, ciklički pomaci $T'^[j]$ mogu imati drugačiji leksikografski poredak od $T^{[j]}$, zbog čega neki reci moraju biti pomaknuti.
+U prethodnim koracima, vrijednost u jednom elementu stupca $L$ je bila izmijenjena (Ib) i jedan element je dodan (IIa). No u slučaju $j<i$, ciklički pomaci $T'^[j]$ mogu imati drugačiji leksikografski poredak od $T^{[j]}$, zbog čega neki reci moraju biti pomaknuti.
 
 Kako bi se ustanovilo koji reci moraju biti pomaknuti, uspoređuju se pozicije $T^{[j]}$ s pozicijama $T'^{[j]}$, od $j=i-1$ pa do $0$, dok pozicije nisu jednake. Pozicija $T^{[j]}$ dobiva se pomoću LF mapiranja iz pozicije $T^{[j+1]}$. Isto tako pozicija pozicija $T'^{[j]}$ dobiva se pomoću LF mapiranja iz pozicije $T'^{[j+1]}$. Kada se te dvije pozicije razlikuju, redak koji odgovara $T^{[j]}$ miče se na izračunatu poziciju $T'^{[j]}$. Pokazuje se da su nakon što su te dvije pozicije jednake reci ispravno poredani[umetnuti referencu].
 U nastavku je prikazan pseudokod za korak (IIb). Funkcija index vraća poziciju cikličkog pomaka.
@@ -361,7 +361,7 @@ U nastavku je prikazan pseudokod za korak (IIb). Funkcija index vraća poziciju 
 \end{enumerate}
 \normalsize
 
-Za primjer koristen za demonstraciju prethodnih koraka, $
+Za primjer korišten za demonstraciju prethodnih koraka, $
 	T=\overset{0}{C}	\overset{1}{T} \overset{2}{C} \overset{3}{T}	\overset{4}{G}
 	\overset{5}{C}	\overset{6}{\$} \rightarrow		
 	T'=\overset{0}{C}	\overset{1}{T}	\overset{2}{\boldsymbol{G}}  \overset{3}{C} \overset{4}{T}	\overset{5}{G}
