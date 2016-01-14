@@ -10,7 +10,7 @@ We are using [Gerlach's implentation](http://citeseerx.ist.psu.edu/viewdoc/downl
 
 The majority of our implementation is contained within the header file *DynamicSuffixArray.h* and its implementation *DynamicSuffixArray.cpp*. The class, variable and method comments are all contained within the header file. The comments inside the C++ file only explain the implementation details or reference the paper.
 
-The rest of the C++ files are unchanged or mostly unchanged, having required at most a few definitions to satisfy our compilers.
+The rest of the C++ files are unchanged or mostly unchanged, having required at most a few (re)definitions to satisfy our compilers.
 
 The building process is managed by the *Makefile*. It manages the building process, as well as the compiler options and flags. The building can simply be started by running
 
