@@ -12,7 +12,13 @@ This repository contains an implementation of the dynamic suffix array described
 
 ## Running the examples
 
-* TODO what the title says *
+For testing purposes we implemented unit tests using [Catch automated test framework](http://catch-lib.net). Tests are grouped into categories that can be run independently.
+To start all tests use:
+```./test```
+To start all tests with time monitoring options use:
+```./test -d yes```
+To print all possible options use:
+```./test -?```
 
 ## Test results
 
