@@ -28,11 +28,17 @@ make all
 
 For testing purposes we implemented unit tests using [Catch automated test framework](http://catch-lib.net). Tests are grouped into categories that can be run independently.
 To start all tests use:
-```./test```
+```bash
+./test
+```
 To start all tests with time monitoring options use:
-```./test -d yes```
+```bash
+./test -d yes
+```
 To print all possible options use:
-```./test -?```
+```bash
+./test -?
+```
 
 ## Test results
 
