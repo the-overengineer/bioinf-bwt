@@ -279,7 +279,8 @@ namespace dynsa {
     }
 
     void DynamicSuffixArray::replace(ustring s, size_t position, size_t length) {
-        //TODO replace
+        this -> deleteAt(position, length);
+        this -> insertFactor(s, position, length);
     }
 
     void DynamicSuffixArray::setText(ustring s, size_t size) {

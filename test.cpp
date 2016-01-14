@@ -92,6 +92,18 @@ TEST_CASE("Short delete", "[short]"){
     REQUIRE((memcmp(a->getBWT(), bwt, sz) == 0));
 }
 
+TEST_CASE("Short replace", "[short]"){
+    a -> replace((ustring) "TT", 3, 2);
+    
+    ustring s = (ustring) "GTTTGTGAG";
+    ustring bwt = (ustring) "GGATT$GTTG";
+    
+    int sz = strlen((char*)s);
+    CHECK((memcmp(a->getText(), s, sz) == 0));
+    sz = strlen((char*)bwt);
+    REQUIRE((memcmp(a->getBWT(), bwt, sz) == 0));
+}
+
 TEST_CASE("1031 long bwt verification - test1", "[verification]"){
     
     FILE* input = fopen("testdata/test1/GCA_000731455_1031.in", "r");
