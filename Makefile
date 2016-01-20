@@ -4,7 +4,7 @@ DBG= -DNO_CHECK -DNDEBUG # -DNDEBUG -O0 -g -DNFREE_ISA
 CPPFLAGS=-Wall $(DBG) $(FREE) #-O2 -funroll-loops
 LINKFLAGS=
 CFLAGS=-Wall -ansi
-EXE=test
+EXE=test run
 OBJ=sbvtree.o DynamicSuffixArray.o DSASampling.o rbtree.o  intTree.o lpermutation.o gRankS.o
 
 all: $(EXE)
