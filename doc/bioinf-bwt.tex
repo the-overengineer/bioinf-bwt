@@ -38,9 +38,9 @@ Konceptualno, tekst nad kojim je izvršena BWT je sličan sufiksnom polju. Zbog 
 
 U ovom seminaru razmatrat će se uobičajne operacije nad tekstom, umetanje znakova te brisanje znakova, koje tekst $T$ transformiraju u novi tekst $T'$. Biti će proučavan utjecaj tih operacija na $bwt(T)$ i biti će predložen algoritam za pretvorbu $bwt(T)$ u $bwt(T')$.
 \section{Burrows-Wheelerova transformacija}
-Neka je tekst $T=T[0..n]$ riječ duljine $n+1$ s abecedom $\Sigma$, pri čemu je abeceda $\Sigma$ konacne velicine $\sigma$. Zadnji znak u rijeci $T$ je jedinstveni znak $\$$ (\textit{sentinel}) koji ima vrijedmost manju od svih ostalih znakova u abecedi.  Podniz koji pocinje na poziciji $i$ i zavrsava na poziciji $j$ je oznacen s $T[i..j]$, znak na poziciji $i$ je oznacen s $T[i]$ te je ciklički pomak reda $i$,  $T[i..n]T[0..i-1]$, oznacen s $T^{[i]}$.
+Neka je tekst $T=T[0..n]$ riječ duljine $n+1$ s abecedom $\Sigma$, pri čemu je abeceda $\Sigma$ konačne velićine $\sigma$. Zadnji znak u riječi $T$ je jedinstveni znak $\$$ (\textit{sentinel}) koji ima vrijednost manju od svih ostalih znakova u abecedi.  Podniz koji počinje na poziciji $i$ i završava na poziciji $j$ je označen s $T[i..j]$, znak na poziciji $i$ je označen s $T[i]$ te je ciklički pomak reda $i$,  $T[i..n]T[0..i-1]$, označen s $T^{[i]}$.
 
-Burrows-Wheelerova transformacija od $T$, oznacena s $bwt(T)$, je tekst duljine $n+1$ koji odgovara zadnjem stupcu, ($L$), matrice čiji su reci leksikografski sortirani ciklički pomaci $T^{[i]}$. Prvi stupac matrice, ($F$), je sortiran, tako da se jednostavno može izračunati iz stupca $L$. Redovi sortiranih cikličkih pomaka, $\pi$ jednaki su sufiksnom polju od $T$. Iz toga slijedi kako su sufiksno polje $SA[i]$ i $L$ povezani jednostavnom formulom $L[i]= T[(SA[i]-1) \mod |T|]$.
+Burrows-Wheelerova transformacija od $T$, označena s $bwt(T)$, je tekst duljine $n+1$ koji odgovara zadnjem stupcu, ($L$), matrice čiji su reci leksikografski sortirani ciklički pomaci $T^{[i]}$. Prvi stupac matrice, ($F$), je sortiran, tako da se jednostavno može izračunati iz stupca $L$. Redovi sortiranih cikličkih pomaka, $\pi$ jednaki su sufiksnom polju od $T$. Iz toga slijedi kako su sufiksno polje $SA[i]$ i $L$ povezani jednostavnom formulom $L[i]= T[(SA[i]-1) \mod |T|]$.
 
 \begin{table}[h]
 
@@ -84,7 +84,7 @@ Burrows-Wheelerova transformacija od $T$, oznacena s $bwt(T)$, je tekst duljine 
 
 Tablicom \ref{slika:bwt} prikazana je Burrows-Wheelerova transformacija niza znakova $ATGCG\$$. U tablici lijevo prikazani su svi ciklički pomaci tog niza. U tablici na sredini ti ciklički pomaci su leksikografski sortirani i oznaceni su stupci $F$ i $L$. U tablici desno prikazan je niz brojeva koji predstavlja redove sortiranih cikličkih pomaka, ujedno i sufiksno polje od niza.
 
-Burrows-Wheelerova transformacija sadrži samo zadnji stupac sortirane matrice cikličkih pomaka L. Za rekonstrukciju počenog niza niza $T$ iz $bwt(t)$ koristi se veza između stupca L i stupca F. Ako znakovima u primjeru s $ATGCG\$$ svakom znaku dodamo broj koji oznacava redni broj pojavljivanja tog slova dobivamo $A_{1}T_{1}G_{1}C_{1}G_{2}\$_{1}$.
+Burrows-Wheelerova transformacija sadrži samo zadnji stupac sortirane matrice cikličkih pomaka L. Za rekonstrukciju počenog niza $T$ iz $bwt(t)$ koristi se veza između stupca L i stupca F. Ako znakovima u primjeru s $ATGCG\$$ svakom znaku dodamo broj koji označava redni broj pojavljivanja tog slova dobivamo $A_{1}T_{1}G_{1}C_{1}G_{2}\$_{1}$.
 \begin{table}[h]
 \begin{center}
 
@@ -101,8 +101,8 @@ Burrows-Wheelerova transformacija sadrži samo zadnji stupac sortirane matrice c
 \label{slika:ibwt}	
 \end{center}
 \end{table}
-Tablicom \ref{slika:ibwt} prikazana je BWT niza s rangiranim znakovima zajedno sa stupcima L i F. Rotacije koje počinju istim slovom, u primjeru slovom G, sortirane su po znakovima iza tog slova. Kada se te rotiacije ciklički rotiraju za jedno mjesto, slova G će se naći u zadnjem stupcu, dok druga slova biti na početku niza i određivati će leksikografski poredak tih rotacija. Upravo zato je redosljed istih slova u prvom stupcu jednak redosljedu istih slova u zadnjem stupcu. Ovo svojstvo očuvanosti poretka istih znakova u prvom i zadnjem stupcu BWT-a naziva se LF-mapiranje (\textit{last to first mapping}) i omogućuje rekonstrukciju pocetnog niza iz BWT-a. Formalnije, LF-mapiranje opisuje vezu, odnosno mapiranje, zadnjeg i prvog stupca u listi leksikografski sortiranih cikličkih rotacija niza S, a temelji se na sljedećem: i-ta pojava znaka c u zadnjem stupcu (stupcu L) leksikografski sortiranih cikličkih rotacija
-odgovara i-toj pojavi znaka c u prvom stupcu (stupcu F). [literatura skripta iz bioinf] LF mapiranjem, iz BWT-a i uz prisutnost stupca F, moguće je izgraditi početni niz. Stupac F može se dobiti tako da se leksikografski poredaju svi znakovi u stupcu L, odnosno BWT-u.
+Tablicom \ref{slika:ibwt} prikazana je BWT niza s rangiranim znakovima zajedno sa stupcima L i F. Rotacije koje počinju istim slovom, u primjeru slovom G, sortirane su po znakovima iza tog slova. Kada se te rotiacije ciklički rotiraju za jedno mjesto, slova G će se naći u zadnjem stupcu, dok druga slova biti na početku niza i određivati će leksikografski poredak tih rotacija. Upravo zato je redosljed istih slova u prvom stupcu jednak redosljedu istih slova u zadnjem stupcu. Ovo svojstvo očuvanosti poretka istih znakova u prvom i zadnjem stupcu BWT-a naziva se LF-mapiranje (\textit{last to first mapping}) i omogućuje rekonstrukciju početnog niza iz BWT-a. Formalnije, LF-mapiranje opisuje vezu, odnosno mapiranje, zadnjeg i prvog stupca u listi leksikografski sortiranih cikličkih rotacija niza S, a temelji se na sljedećem: i-ta pojava znaka c u zadnjem stupcu (stupcu L) leksikografski sortiranih cikličkih rotacija
+odgovara i-toj pojavi znaka c u prvom stupcu (stupcu F) \cite{skripta}. LF mapiranjem, iz BWT-a i uz prisutnost stupca F, moguće je izgraditi početni niz. Stupac F može se dobiti tako da se leksikografski poredaju svi znakovi u stupcu L, odnosno BWT-u.
 Formula za LF mapiranje znaka na poziciji $p$ glasi 
 \begin{equation}
 	LF(p)=C_T[L[p]]+rank_{L[p]}(L,p)-1 ,
@@ -113,7 +113,7 @@ Stupac L, odnosno BWT je konceptualno blizak sufiksnom polju, a povezuje ih jedn
 
 Jednostavna transformacija niza $T$ u niz $T'$ uzrokuje da se BWT od $T'$ mora računati od nule. U nastavku seminara biti će proučeno kako jednostavne operacije nad nizom $T$ utječu na $bwt(T)$. 
 \section{Opis algoritma}
-Opis će biti temeljen na slučaju kada se u niz umeće samo jedan znak. Na temelju toga biti će predstavljen algoritam u četiri koraka za ažiriranje BWT-a[salson i onaj drugi lik]. Kako bi se mogao ažurirati BWT, potrebno je i ažurirati i brojeve znakova manjih od određenog znaka $C_T$ koji se koriste u LF mapiranju. Zatim će se taj pristup proširiti na više znakova i na brisanje znakova.
+Opis će biti temeljen na slučaju kada se u niz umeće samo jedan znak. Na temelju toga biti će predstavljen algoritam u četiri koraka za ažiriranje BWT-a \cite{salson}. Kako bi se mogao ažurirati BWT, potrebno je i ažurirati i brojeve znakova manjih od određenog znaka $C_T$ koji se koriste u LF mapiranju. Zatim će se taj pristup proširiti na više znakova i na brisanje znakova.
 
 BWT je usko povezan s leksičkim sortiranjem svih cikličkih pomaka niza $T'$. Pretpostavka je da se u niz $T$ umeće slovo $c$ na poziciju $i$. Prema tome, postoje 4 slučaja koji su opisani slikom \ref{slika:pozicije}. 
 
@@ -160,11 +160,11 @@ T'^{[j]}=\left \{
 
 \normalsize
 \subsection{Ciklički pomaci reda $j>i$ (I)}
-Pozicija umetanja znaka $i$ u ovom slučaju je manja od reda rotacije cikličkog pomaka $j$, što znači da će se u cikličkom pomaku umetnuti znak nalazi iza znaka $\$$ kao što je prikazano na slici\ref{tablica:pozicije}. Pokazuje se da u ovom slučaju poredak cikličkih pomaka ne mijenja. 
+Pozicija umetanja znaka $i$ u ovom slučaju je manja od reda rotacije cikličkog pomaka $j$, što znači da će se u cikličkom pomaku umetnuti znak nalaziti iza znaka $\$$ kao što je prikazano na slici\ref{tablica:pozicije}. Pokazuje se da u ovom slučaju poredak cikličkih pomaka ne mijenja. 
 \subsubsection{Ciklički pomaci reda $j>i+1$ (Ia)}
 U ovom slučaju znak $c$ se dodaje između znaka $\$$ i zadnjeg stupca $L$, tako da su stupci $F$ i $L$ nepromijenjeni.
 \subsubsection{Ciklički pomaci reda $j=i+1$ (Ib)}
-Poredak cikličkih pomaka je i u ovom slučaju isti. Iz slike \ref{tablica:pozicije} je vidljivo kako se c dodaje na kraj cikličkog pomaka što uzrokuje promjenu zadnjeg stupca $L$, $T'^{[i+1]}=T^{[i]}c$. Kako bi se provela ova modifikacija prvo je potrebno pronaći poziciju redka koji odgovara pomaku za $i$ i zamijeniti znak na tom mjestu u $c$. Poziciju retka koji odgovara pomaku  $i$ moguće je pronaći korištenjem uzorkovanog sufiksnog polja i pozicije $k$ takve da je $k=SA[i]$ [ovdje referenca za strukturu sa uzorkovanim SA]. Pomak $T^{[i]}$ može biti preskočen kod uzorkovanja tako da je potrebno koristiti sljedeću otipkanu poziciju koja odgovara cikličkom pomaku $T^{[j]}$. Red $j$ je takav da je $j>i$ i takav da ne postoji pomak $T^{[j']}$ za koji vrijedi $i<j'<j$. LF mapiranje omogućava da se preko cikličkog pomaka reda $j$ dođe do cikličkog pomaka $j-1$, tako da se korištenjem LF funkcije $j-i$ puta može doći do cikličkog pomaka $T^{[i]}$. Konačno, moguće je zamijeniti slovo u L stupcu, $L[k]=c$, gdje sada element u stupcu $L$ na poziciji $k$ odgovara pomaku $T'^{[i+1]}$.
+Poredak cikličkih pomaka je i u ovom slučaju isti. Iz slike \ref{tablica:pozicije} je vidljivo kako se $c$ dodaje na kraj cikličkog pomaka što uzrokuje promjenu zadnjeg stupca $L$, $T'^{[i+1]}=T^{[i]}c$. Kako bi se provela ova modifikacija prvo je potrebno pronaći poziciju redka koji odgovara pomaku za $i$ i zamijeniti znak na tom mjestu u $c$. Poziciju retka koji odgovara pomaku  $i$ moguće je pronaći korištenjem uzorkovanog sufiksnog polja i pozicije $k$ takve da je $k=SA[i]$\cite{navaro}. Pomak $T^{[i]}$ može biti preskočen kod uzorkovanja tako da je potrebno koristiti sljedeću otipkanu poziciju koja odgovara cikličkom pomaku $T^{[j]}$. Red $j$ je takav da je $j>i$ i takav da ne postoji pomak $T^{[j']}$ za koji vrijedi $i<j'<j$. LF mapiranje omogućava da se preko cikličkog pomaka reda $j$ dođe do cikličkog pomaka $j-1$, tako da se korištenjem LF funkcije $j-i$ puta može doći do cikličkog pomaka $T^{[i]}$. Konačno, moguće je zamijeniti slovo u L stupcu, $L[k]=c$, gdje sada element u stupcu $L$ na poziciji $k$ odgovara pomaku $T'^{[i+1]}$.
 U nastavku su prikazani koraci (Ia) i (Ib) na slici \ref{slika:Ia}.
 
 \begin{figure}[H]
@@ -256,7 +256,7 @@ $
 \subsubsection{Ciklički pomaci reda $j<i$ (IIb)}
 U prethodnim koracima, vrijednost u jednom elementu stupca $L$ je bila izmjenjena (Ib) i jedan element je dodan (IIa). No u slučaju $j<i$, ciklički pomaci $T'^{[j]}$ mogu imati drugačiji leksikografski poredak od $T^{[j]}$, zbog čega neki reci moraju biti pomaknuti.
 
-Kako bi se ustanovilo koji reci moraju biti pomaknuti, uspoređuju se pozicije $T^{[j]}$ s pozicijama $T'^{[j]}$, od $j=i-1$ pa do $0$, dok pozicije nisu jednake. Pozicija $T^{[j]}$ dobiva se pomoću LF mapiranja iz pozicije $T^{[j+1]}$. Isto tako pozicija pozicija $T'^{[j]}$ dobiva se pomoću LF mapiranja iz pozicije $T'^{[j+1]}$. Kada se te dvije pozicije razlikuju, redak koji odgovara $T^{[j]}$ miče se na izračunatu poziciju $T'^{[j]}$. Pokazuje se da su nakon što su te dvije pozicije jednake reci ispravno poredani.
+Kako bi se ustanovilo koji reci moraju biti pomaknuti, uspoređuju se pozicije $T^{[j]}$ s pozicijama $T'^{[j]}$, od $j=i-1$ pa do $0$, dok pozicije nisu jednake. Pozicija $T^{[j]}$ dobiva se pomoću LF mapiranja iz pozicije $T^{[j+1]}$. Isto tako pozicija $T'^{[j]}$ dobiva se pomoću LF mapiranja iz pozicije $T'^{[j+1]}$. Kada se te dvije pozicije razlikuju, redak koji odgovara $T^{[j]}$ miče se na izračunatu poziciju $T'^{[j]}$. Pokazuje se da su nakon što su te dvije pozicije jednake reci ispravno poredani.
 U nastavku je prikazan pseudokod za korak (IIb). Funkcija index vraća poziciju cikličkog pomaka.
 \footnotesize
 \begin{enumerate}
@@ -396,10 +396,11 @@ Problem izgradnje BWT-a nakon operacija izmjene usko je grlo u korištenju sufik
 
 Korištenjem dinamičke strukture poboljšava se iskoristivost sufiksnog niza, veoma važne strukture u manipulaciji tekstom, pa tako i u području bioinformatike. Dodatna poboljšanja mogli bismo postići i direktnom implementacijom funkcije zamjene podniza, a možda i mikrooptimizacijama napisanog koda. Ipak, čak i prilično naivna implementacija dinamičkog sufiksnog niza koji predlažu Salson i suradnici pokazala se velikim poboljšanjem nad operacijama rekonstrukcije.
 
-\section{Literatura}
-Salson et al. 2009. A fourstage algorithm for updating a Burrows–Wheeler transform,
-http://www.sciencedirect.com/science/article/pii/S0304397509004770
+\begin{thebibliography}{1}
 
+  	\bibitem{salson} M. Salson, T. Lecroq, M. Léonard, L. Moucharda,  A fourstage algorithm for updating a Burrows–Wheeler transform,in: Theoretical Computer Science,vol. 410, 2009, pp. 4350-4359 
+	\bibitem{skripta} Mile Šikić, Mirjana Domazet-Lošo, 2013, Bioinformatika-skripta, Zagreb, Hrvatska,  Fakultet elekrotehnike i računarstva
+	\bibitem{navaro} R. González, G. Navarro, Improved dynamic rank-select entropy-bound structures, in: Proc. of the Latin American Theoretical Informatics, LATIN, in: Lecture Notes in Comput. Sci., vol. 4957, 2008, pp. 374-386.
+\end{thebibliography}
 
-\section{Sažetak}
 \end{document}
