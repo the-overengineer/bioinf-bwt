@@ -8,6 +8,9 @@
   \usepackage{float}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage[round]{natbib}
+\newcommand{\engterm}[1]{\emph{#1}}
+\newcommand{\complexity}[1]{$\mathcal{O}(#1)$}
 
 \usepackage{caption}
 \captionsetup[table]{labelsep=space}
@@ -32,15 +35,22 @@
 \stvoripredstranice
 \section{Uvod}
 
-Burrows-Wheelerova transformacija (BWT) je transformacija teksta, vrlo prikladna za kompresiju. Njena primjena tipično rezultira poretkom u kojem isti znakovi često završavaju djelomično grupiranima. Nadalje, reverzibilna je bez potrebe za pohranom dodatnih podataka. Stoga se koristi u nekim popularnim alatima za kompresiju bez gubitaka, primjerice programu bzip2.  Osim pod nazivom Burrows-Wheelerova transformacija, poznata je i pod nazivom \textit{block-sorting compression}. 
+Burrows-Wheelerova transformacija (BWT) \citep{burrows1994block} je transformacija teksta, vrlo prikladna za kompresiju. Njena primjena tipično rezultira poretkom u kojem isti znakovi često završavaju djelomično grupiranima. Nadalje, reverzibilna je bez potrebe za pohranom dodatnih podataka. Stoga se koristi u nekim popularnim alatima za kompresiju bez gubitaka, primjerice programu bzip2 \citep{bzip2}. Osim pod nazivom Burrows-Wheelerova transformacija, poznata je i pod nazivom \engterm{block-sorting compression}. 
 
-Konceptualno, tekst nad kojim je izvršena BWT je sličan sufiksnom polju. Zbog te sličnosti BWT se koristi i kao indeksna struktura. BWT teksta $T$ ($bwt(t)$) se često dobiva iz modifikacije sufiksnog polja koja konstrukcija ima $O(n)$ složenost. Pohranjivanje sufiksnog polja u memoriji je jos uvjek glavni problem jer zahtjeva $n\log{}n$ bita dok pohrana BWT-a u memoriju zahtjeva $(n\log{}\sigma)$ bita, gdje je $\sigma$ broj slova u abecedi.
+Konceptualno, algoritam BWT sli\v{c}an je algoritmu konstrukcije sufiksnog polja. Zbog te sličnosti BWT se koristi i kao indeksna struktura. BWT teksta $T$ ($bwt(t)$) se često dobiva iz modifikacije sufiksnog polja, \v{c}ija je konstrukcija slo\v{z}enosti \complexity{n}. Pohranjivanje sufiksnog polja u memoriji je jos uvjek glavni problem jer zahtjeva $n\log{}n$ bita dok pohrana BWT-a u memoriju zahtjeva $(n\log{}\sigma)$ bita, gdje je $\sigma$ broj slova u abecedi $\Sigma$ teksta.
 
-U ovom seminaru razmatrat će se uobičajne operacije nad tekstom, umetanje znakova te brisanje znakova, koje tekst $T$ transformiraju u novi tekst $T'$. Biti će proučavan utjecaj tih operacija na $bwt(T)$ i biti će predložen algoritam za pretvorbu $bwt(T)$ u $bwt(T')$.
+U ovom dokumentu razmatrat će se uobičajne operacije nad tekstom -- umetanje znakova, te brisanje znakova, koje tekst $T$ transformiraju u novi tekst $T'$. Biti će proučavan utjecaj tih operacija na $bwt(T)$, te \'{c}e se opisati algoritam pretvorbe $bwt(T)$ u $bwt(T')$ preuzet iz \citep{salson2009four}.
+
 \section{Burrows-Wheelerova transformacija}
-Neka je tekst $T=T[0..n]$ riječ duljine $n+1$ s abecedom $\Sigma$, pri čemu je abeceda $\Sigma$ konacne velicine $\sigma$. Zadnji znak u rijeci $T$ je jedinstveni znak $\$$ (\textit{sentinel}) koji ima vrijedmost manju od svih ostalih znakova u abecedi.  Podniz koji pocinje na poziciji $i$ i zavrsava na poziciji $j$ je oznacen s $T[i..j]$, znak na poziciji $i$ je oznacen s $T[i]$ te je ciklički pomak reda $i$,  $T[i..n]T[0..i-1]$, oznacen s $T^{[i]}$.
 
-Burrows-Wheelerova transformacija od $T$, oznacena s $bwt(T)$, je tekst duljine $n+1$ koji odgovara zadnjem stupcu, ($L$), matrice čiji su reci leksikografski sortirani ciklički pomaci $T^{[i]}$. Prvi stupac matrice, ($F$), je sortiran, tako da se jednostavno može izračunati iz stupca $L$. Redovi sortiranih cikličkih pomaka, $\pi$ jednaki su sufiksnom polju od $T$. Iz toga slijedi kako su sufiksno polje $SA[i]$ i $L$ povezani jednostavnom formulom $L[i]= T[(SA[i]-1) \mod |T|]$.
+\subsection{Osnovni pojmovi}
+Kako bismo prikazali rad algoritma BWT i njegovu vezu sa sufiksnim poljem, uvodimo osnovnu terminologiju, koja se nadalje koristi u obja\v{s}njavanju samih algoritama dinami\v{c}kih operacija nad sufiksnim poljem. Termini i oznake preuzeti su iz \citep{salson2009four}.
+
+Neka je tekst $T=T[0..n]$ riječ duljine $n+1$ iz abecede $\Sigma$, pri čemu je abeceda $\Sigma$ konacne velicine $\sigma$. Zadnji znak u rijeci $T$ je jedinstveni znak $\$$ (\engterm{sentinel}) koji ima vrijednost manju od svih ostalih znakova u abecedi, odnosno pri operaciji sortiranja zauzima prvu poziciju. Podniz koji zapo\v{c}inje na poziciji $i$ i zavr\v{s}ava na poziciji $j$ ozna\v{c}en je s $T[i..j]$, znak na poziciji $i$ je ozna\v{c}en s $T[i]$, te je ciklički pomak reda $i$,  $T[i..n]T[0..i-1]$, ozna\v{c}en s $T^{[i]}$.
+
+Burrows-Wheelerova transformacija od $T$, ozna\v{c}ena s $bwt(T)$, jest tekst duljine $n+1$ koji odgovara zadnjem stupcu, koji nazivamo ($L$), matrice čiji su retci leksikografski sortirani ciklički pomaci $T^{[i]}$. Prvi stupac matrice, nadalje ($F$), je leksikografski sortiran, tako da se može jednostavno izračunati iz stupca $L$ operacijom sortiranja. Redovi sortiranih cikličkih pomaka $\pi$ poretkom su jednaki sufiksnom polju od $T$. Iz toga slijedi kako su sufiksno polje $SA[i]$ i $L$ povezani jednostavnom formulom $L[i]= T[(SA[i]-1) \mod |T|]$.
+
+\subsection{Primjer primjene algoritma BWT}
 
 \begin{table}[h]
 
@@ -82,9 +92,10 @@ Burrows-Wheelerova transformacija od $T$, oznacena s $bwt(T)$, je tekst duljine 
 \label{slika:bwt}	
 \end{table}
 
-Tablicom \ref{slika:bwt} prikazana je Burrows-Wheelerova transformacija niza znakova $ATGCG\$$. U tablici lijevo prikazani su svi ciklički pomaci tog niza. U tablici na sredini ti ciklički pomaci su leksikografski sortirani i oznaceni su stupci $F$ i $L$. U tablici desno prikazan je niz brojeva koji predstavlja redove sortiranih cikličkih pomaka, ujedno i sufiksno polje od niza.
+Tablicama \ref{slika:bwt} prikazana je Burrows-Wheelerova transformacija niza znakova $ATGCG\$$, preuzeta iz \citep{salson2009four}. U tablici su s lijeva prikazani su svi ciklički pomaci tog niza. U sredi\v{s}njoj tablici ti su ciklički pomaci leksikografski sortirani i ozna\v{c}eni su stupci $F$ i $L$. U tablici desno prikazan je niz brojeva koji predstavlja redove sortiranih cikličkih pomaka, a time ujedno i sufiksno polje niza.
 
-Burrows-Wheelerova transformacija sadrži samo zadnji stupac sortirane matrice cikličkih pomaka L. Za rekonstrukciju počenog niza niza $T$ iz $bwt(t)$ koristi se veza između stupca L i stupca F. Ako znakovima u primjeru s $ATGCG\$$ svakom znaku dodamo broj koji oznacava redni broj pojavljivanja tog slova dobivamo $A_{1}T_{1}G_{1}C_{1}G_{2}\$_{1}$.
+Burrows-Wheelerova transformacija sadrži samo zadnji stupac sortirane matrice cikličkih pomaka $L$. Za rekonstrukciju počenog niza niza $T$ iz $bwt(t)$ koristi se veza između stupca $L$ i stupca $F$. Ako znakovima u primjeru s $ATGCG\$$ svakom znaku dodamo broj koji oznacava redni broj pojavljivanja tog slova dobivamo $A_{1}T_{1}G_{1}C_{1}G_{2}\$_{1}$.
+
 \begin{table}[h]
 \begin{center}
 
@@ -101,7 +112,8 @@ Burrows-Wheelerova transformacija sadrži samo zadnji stupac sortirane matrice c
 \label{slika:ibwt}	
 \end{center}
 \end{table}
-Tablicom \ref{slika:ibwt} prikazana je BWT niza s rangiranim znakovima zajedno sa stupcima L i F. Rotacije koje počinju istim slovom, u primjeru slovom G, sortirane su po znakovima iza tog slova. Kada se te rotiacije ciklički rotiraju za jedno mjesto, slova G će se naći u zadnjem stupcu, dok druga slova biti na početku niza i određivati će leksikografski poredak tih rotacija. Upravo zato je redosljed istih slova u prvom stupcu jednak redosljedu istih slova u zadnjem stupcu. Ovo svojstvo očuvanosti poretka istih znakova u prvom i zadnjem stupcu BWT-a naziva se LF-mapiranje (\textit{last to first mapping}) i omogućuje rekonstrukciju pocetnog niza iz BWT-a. Formalnije, LF-mapiranje opisuje vezu, odnosno mapiranje, zadnjeg i prvog stupca u listi leksikografski sortiranih cikličkih rotacija niza S, a temelji se na sljedećem: i-ta pojava znaka c u zadnjem stupcu (stupcu L) leksikografski sortiranih cikličkih rotacija
+
+Tablicom \ref{slika:ibwt} prikazana je BWT niza s rangiranim znakovima zajedno sa stupcima $L$ i $F$. Rotacije koje započinju istim slovom, u primjeru slovom G, sortirane su po znakovima iza tog slova. Kada se te rotacije ciklički pomaknu za jedno mjesto, slova G će se naći u zadnjem stupcu, dok druga slova biti na početku niza i određivati će leksikografski poredak tih rotacija. Upravo zato je redosljed istih slova u prvom stupcu jednak redosljedu istih slova u zadnjem stupcu. Ovo svojstvo očuvanosti poretka istih znakova u prvom i zadnjem stupcu BWT-a naziva se LF-mapiranje (\textit{last to first mapping}) i omogućuje rekonstrukciju pocetnog niza iz BWT-a. Formalnije, LF-mapiranje opisuje vezu, odnosno mapiranje, zadnjeg i prvog stupca u listi leksikografski sortiranih cikličkih rotacija niza S, a temelji se na sljedećem: i-ta pojava znaka c u zadnjem stupcu (stupcu L) leksikografski sortiranih cikličkih rotacija
 odgovara i-toj pojavi znaka c u prvom stupcu (stupcu F). [literatura skripta iz bioinf] LF mapiranjem, iz BWT-a i uz prisutnost stupca F, moguće je izgraditi početni niz. Stupac F može se dobiti tako da se leksikografski poredaju svi znakovi u stupcu L, odnosno BWT-u.
 Formula za LF mapiranje znaka na poziciji $p$ glasi 
 \begin{equation}
@@ -112,6 +124,7 @@ gdje je $C_T$ broj znakova u nizu manjih od znaka $L[p]$, $rank_{L[p]}(L,p)$ bro
 Stupac L, odnosno BWT je konceptualno blizak sufiksnom polju, a povezuje ih jednostavna transformacija. Stoga se većina algoritama za konstrukciju BWT-a bazira na postojećim algoritmima za računanje sufiksnog polja s kompleksnošću $O(n)$ i primjeni transformacije sufiksnog polja u BWT.
 
 Jednostavna transformacija niza $T$ u niz $T'$ uzrokuje da se BWT od $T'$ mora računati od nule. U nastavku seminara biti će proučeno kako jednostavne operacije nad nizom $T$ utječu na $bwt(T)$. 
+
 \section{Opis algoritma}
 Opis će biti temeljen na slučaju kada se u niz umeće samo jedan znak. Na temelju toga biti će predstavljen algoritam u četiri koraka za ažiriranje BWT-a[salson i onaj drugi lik]. Kako bi se mogao ažurirati BWT, potrebno je i ažurirati i brojeve znakova manjih od određenog znaka $C_T$ koji se koriste u LF mapiranju. Zatim će se taj pristup proširiti na više znakova i na brisanje znakova.
 
@@ -397,9 +410,7 @@ Problem izgradnje BWT-a nakon operacija izmjene usko je grlo u korištenju sufik
 Korištenjem dinamičke strukture poboljšava se iskoristivost sufiksnog niza, veoma važne strukture u manipulaciji tekstom, pa tako i u području bioinformatike. Dodatna poboljšanja mogli bismo postići i direktnom implementacijom funkcije zamjene podniza, a možda i mikrooptimizacijama napisanog koda. Ipak, čak i prilično naivna implementacija dinamičkog sufiksnog niza koji predlažu Salson i suradnici pokazala se velikim poboljšanjem nad operacijama rekonstrukcije.
 
 \section{Literatura}
-Salson et al. 2009. A fourstage algorithm for updating a Burrows–Wheeler transform,
-http://www.sciencedirect.com/science/article/pii/S0304397509004770
+\bibliographystyle{unsrtnat}
+\bibliography{bazaLiterature}
 
-
-\section{Sažetak}
 \end{document}
