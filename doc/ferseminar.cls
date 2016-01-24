@@ -59,7 +59,7 @@
 
   \vspace{7.2cm}
   {\centering\bfseries\large
-  SEMINAR
+  PROJEKT
   \par}
 
   \vspace{1cm}

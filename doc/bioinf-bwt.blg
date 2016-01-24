@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: bioinf-bwt.aux
+The style file: unsrtnat.bst
+Database file #1: bazaLiterature.bib
+Warning--empty journal in burrows1994block
+You've used 1 entry,
+            2481 wiz_defined-function locations,
+            556 strings with 4554 characters,
+and the built_in function-call counts, 332 in all, are:
+= -- 24
+> -- 15
+< -- 1
++ -- 6
+- -- 4
+* -- 19
+:= -- 59
+add.period$ -- 3
+call.type$ -- 1
+change.case$ -- 2
+chr.to.int$ -- 1
+cite$ -- 2
+duplicate$ -- 18
+empty$ -- 29
+format.name$ -- 7
+if$ -- 64
+int.to.chr$ -- 1
+int.to.str$ -- 2
+missing$ -- 1
+newline$ -- 13
+num.names$ -- 3
+pop$ -- 11
+preamble$ -- 1
+purify$ -- 1
+quote$ -- 0
+skip$ -- 13
+stack$ -- 0
+substring$ -- 2
+swap$ -- 1
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 7
+warning$ -- 1
+while$ -- 2
+width$ -- 0
+write$ -- 18
+(There was 1 warning)
