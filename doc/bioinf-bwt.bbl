@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -9,5 +9,35 @@
 Michael Burrows and David~J Wheeler.
 \newblock A block-sorting lossless data compression algorithm.
 \newblock 1994.
+
+\bibitem[Seward(1996)]{bzip2}
+Julian Seward.
+\newblock Bzip2.
+\newblock \url{http://www.bzip.org/}, 1996.
+
+\bibitem[Salson et~al.(2009)Salson, Lecroq, L{\'e}onard, and
+  Mouchard]{salson2009four}
+Mikael Salson, Thierry Lecroq, Martine L{\'e}onard, and Laurent Mouchard.
+\newblock A four-stage algorithm for updating a burrows--wheeler transform.
+\newblock \emph{Theoretical Computer Science}, 410\penalty0 (43):\penalty0
+  4350--4359, 2009.
+
+\bibitem[{\v{S}}iki{\'{c}} and Domazet-Lo{\v{s}}o(2013)]{skripta}
+Mile {\v{S}}iki{\'{c}} and Mirjana Domazet-Lo{\v{s}}o.
+\newblock \emph{Bioinformatika - skripta}.
+\newblock Fakultet elektrotehnike i ra{\v{c}}unarstva, Sveu{\v{c}}ili{\v{s}}te
+  u Zagrebu, 2013.
+
+\bibitem[Gonz{\'a}lez and Navarro(2008)]{gonzalez2008improved}
+Rodrigo Gonz{\'a}lez and Gonzalo Navarro.
+\newblock Improved dynamic rank-select entropy-bound structures.
+\newblock In \emph{LATIN 2008: Theoretical Informatics}, pages 374--386.
+  Springer, 2008.
+
+\bibitem[Gerlach(2007)]{gerlach2007dynamic}
+Wolfgang Gerlach.
+\newblock Dynamic fm-index for a collection of texts with application to
+  space-efficient construction of the compressed suffix array.
+\newblock \emph{Master's thesis, Universit{\"a}t Bielefeld, Germany}, 2007.
 
 \end{thebibliography}

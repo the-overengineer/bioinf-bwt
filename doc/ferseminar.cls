@@ -4,6 +4,7 @@
 \usepackage[left=3cm,right=2cm,top=3cm,bottom=3cm,nohea dfoot]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[croatian]{babel}
+\usepackage[square,sort,comma,numbers]{natbib}
 \usepackage[T1]{fontenc}
 \usepackage{helvet}
 \usepackage{graphicx}
@@ -97,6 +98,6 @@
 
 \newcommand{\dodajliteraturu}[1]{
   \nocite{*}
-  \bibliographystyle{plain}
+  \bibliographystyle{unsrtnat}
   \bibliography{#1}
 }
